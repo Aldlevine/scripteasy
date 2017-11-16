@@ -72,7 +72,8 @@
     "update": "comp update -s",
     "version": [
       "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
-      "git add CHANGELOG.md"
+      "git add CHANGELOG.md",
+      "build"
     ]
   }
 }
