@@ -1,3 +1,13 @@
+<a name="0.0.4"></a>
+## [0.0.4](https://github.com/Aldlevine/scripteasy/compare/v0.0.3...v0.0.4) (2017-11-16)
+
+
+### Bug Fixes
+
+* **scripteasy:** Fix incorrect path for JS/JSON scriptfiles ([bb6394a](https://github.com/Aldlevine/scripteasy/commit/bb6394a))
+
+
+
 <a name="0.0.3"></a>
 ## [0.0.3](https://github.com/Aldlevine/scripteasy/compare/v0.0.2...v0.0.3) (2017-11-16)
 
