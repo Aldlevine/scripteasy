@@ -2,8 +2,27 @@
   "name": "scripteasy",
   "version": "0.0.0",
   "description": "The easy script runner",
+  "keywords": [
+    "automation",
+    "build",
+    "build",
+    "cli",
+    "npm",
+    "npm",
+    "runner",
+    "scripts",
+    "scripts",
+    "system",
+    "task",
+    "task"
+  ],
+  "homepage": "https://github.com/Aldlevine/scripteasy#readme",
+  "bugs": { "url": "https://github.com/Aldlevine/scripteasy/issues" },
   "license": "MIT",
   "author": "Aaron Levine <ald.levine@gmail.com>",
+  "main": "src/scripteasy.js",
+  "directories": { "doc": "docs", "test": "test" },
+  "repository": { "type": "git", "url": "git+https://github.com/Aldlevine/scripteasy.git" },
   "scripts": {
     "build": "node src/cli.js build",
     "precommit": "node src/cli.js precommit",
@@ -47,10 +66,7 @@
         "git add package.json docs"
       ],
       "catch": "echo \"An error occured!\"",
-      "finally": [
-        "git checkout stash -q -- .",
-        "git stash drop"
-      ]
+      "finally": [ "git checkout stash -q -- .", "git stash drop" ]
     },
     "commitmsg": "commitlint -e $GIT_PARAMS",
     "docs": "esdoc",
