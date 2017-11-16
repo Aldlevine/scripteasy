@@ -1,3 +1,4 @@
+const path = require('path');
 const {execSync} = require('child_process');
 
 module.exports = class Script
@@ -10,6 +11,7 @@ module.exports = class Script
     this.finally = [].concat(opts.finally||[]);
     this.cwd = opts.cwd || process.cwd();
     this.env = {...opts.env, ...process.env};
+    this.env.PATH = path.resolve(this.cwd, 'node_modules', '.bin') + path.delimiter + this.env.PATH;
   }
 
   run ()

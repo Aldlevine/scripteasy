@@ -1,5 +1,3 @@
-const Script = require('./script');
-
 module.exports = class Scripteasy
 {
   constructor (scripts)
@@ -9,6 +7,7 @@ module.exports = class Scripteasy
 
   parseScripts (scripts)
   {
+    const Script = require('./script');
     const result = {};
     for (let name in scripts) {
       const script = scripts[name];
@@ -20,6 +19,23 @@ module.exports = class Scripteasy
       result[name] = new Script(this, {try: script});
     }
     return result;
+  }
+
+  static fromFile (filename)
+  {
+    const fs = require('fs');
+    const path = require('path');
+    let scripts = {};
+
+    if (['.yml', '.yaml'].indexOf(path.extname(filename)) > -1) {
+      const yaml = require('yaml');
+      const data = fs.readFileSync(filename).toString();
+      scripts = yaml.eval(data);
+    }
+    else {
+      scripts = require(filename);
+    }
+    return new Scripteasy(scripts);
   }
 
   run (name)

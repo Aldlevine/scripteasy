@@ -1,0 +1,30 @@
+build:
+  - update
+  - link
+  - test
+  - docs
+
+precommit:
+  try:
+    - git stash save --keep-index -q "precommit stash" || true
+    - build
+    - git add package.json docs
+  catch: echo "An error occured"
+  finally:
+    - git checkout stash -- .
+    - git stash drop
+
+commitmsg: commitlint -e $GIT_PARAMS
+
+docs: esdoc
+
+link: comp link
+
+test: nyc mocha
+
+update: comp update -sp
+
+version:
+  - conventional-changelog -p angular -i CHANGELOG.md -s -r 0
+  - git add CHANGELOG.md
+  - precommit

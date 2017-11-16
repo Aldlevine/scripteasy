@@ -32,7 +32,7 @@
     "version": "node ./src/cli.js version"
   },
   "config": { "commitizen": { "path": "./node_modules/cz-conventional-changelog" } },
-  "dependencies": { "minimist": "^1.2.0" },
+  "dependencies": { "minimist": "^1.2.0", "yaml": "^0.3.0" },
   "devDependencies": {
     "@commitlint/cli": "^4.3.0",
     "@commitlint/config-angular": "^4.3.0",
@@ -54,26 +54,5 @@
     "pretty": 80,
     "detective": { "parse": { "plugins": [ "objectRestSpread" ] } }
   },
-  "scripteasy": {
-    "build": [ "update", "link", "test", "docs" ],
-    "precommit": {
-      "try": [
-        "git stash save --keep-index -q \"precommit stash\" || true",
-        "build",
-        "git add package.json docs"
-      ],
-      "catch": "echo \"An error occured!\"",
-      "finally": [ "git checkout stash -q -- .", "git stash drop" ]
-    },
-    "commitmsg": "commitlint -e $GIT_PARAMS",
-    "docs": "esdoc",
-    "link": "comp link",
-    "test": "nyc mocha",
-    "update": "comp update -s",
-    "version": [
-      "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
-      "git add CHANGELOG.md",
-      "build"
-    ]
-  }
+  "scripteasy": "scripts.yml"
 }

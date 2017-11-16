@@ -36,7 +36,8 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/script.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">const {execSync} = require(&apos;child_process&apos;);
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">const path = require(&apos;path&apos;);
+const {execSync} = require(&apos;child_process&apos;);
 
 module.exports = class Script
 {
@@ -48,6 +49,7 @@ module.exports = class Script
     this.finally = [].concat(opts.finally||[]);
     this.cwd = opts.cwd || process.cwd();
     this.env = {...opts.env, ...process.env};
+    this.env.PATH = path.resolve(this.cwd, &apos;node_modules&apos;, &apos;.bin&apos;) + path.delimiter + this.env.PATH;
   }
 
   run ()
