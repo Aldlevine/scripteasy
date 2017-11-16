@@ -47,7 +47,7 @@
     "mocha": "^4.0.1",
     "nyc": "^11.3.0"
   },
-  "cli": { "tease": "./src/cli.js" },
+  "bin": { "tease": "./src/cli.js" },
   "comptroller": {
     "source": "src/**/*",
     "dev": "test/**/*",
