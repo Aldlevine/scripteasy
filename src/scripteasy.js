@@ -33,7 +33,7 @@ module.exports = class Scripteasy
       scripts = yaml.eval(data);
     }
     else {
-      scripts = require(filename);
+      scripts = require(path.resolve(process.cwd(), filename));
     }
     return new Scripteasy(scripts);
   }
