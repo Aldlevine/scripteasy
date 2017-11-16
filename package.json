@@ -1,5 +1,5 @@
 {
-  "name": "scriptease",
+  "name": "scripteasy",
   "version": "0.0.0",
   "description": "The easy script runner",
   "license": "MIT",
@@ -38,17 +38,19 @@
     "pretty": 80,
     "detective": { "parse": { "plugins": [ "objectRestSpread" ] } }
   },
-  "scriptease": {
+  "scripteasy": {
     "build": [ "update", "link", "test", "docs" ],
     "precommit": {
       "try": [
-        "git checkout HEAD -- docs package.json || true",
         "git stash save --keep-index -q \"precommit stash\" || true",
         "build",
         "git add package.json docs"
       ],
       "catch": "echo \"An error occured!\"",
-      "finally": "git stash pop -q --index || git stash pop -q || true"
+      "finally": [
+        "git checkout stash -q -- .",
+        "git stash drop"
+      ]
     },
     "commitmsg": "commitlint -e $GIT_PARAMS",
     "docs": "esdoc",

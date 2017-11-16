@@ -1,6 +1,6 @@
 const Script = require('./script');
 
-module.exports = class Scriptease
+module.exports = class Scripteasy
 {
   constructor (scripts)
   {

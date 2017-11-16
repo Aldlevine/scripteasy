@@ -1,14 +1,20 @@
 window.esdocSearchIndex = [
   [
-    "scriptease/src/script.js~script",
+    "scripteasy/src/script.js~script",
     "class/src/script.js~Script.html",
-    "<span>Script</span> <span class=\"search-result-import-path\">scriptease/src/script.js</span>",
+    "<span>Script</span> <span class=\"search-result-import-path\">scripteasy/src/script.js</span>",
     "class"
   ],
   [
-    "scriptease/src/scriptease.js~scriptease",
+    "scripteasy/src/scriptease.js~scriptease",
     "class/src/scriptease.js~Scriptease.html",
-    "<span>Scriptease</span> <span class=\"search-result-import-path\">scriptease/src/scriptease.js</span>",
+    "<span>Scriptease</span> <span class=\"search-result-import-path\">scripteasy/src/scriptease.js</span>",
+    "class"
+  ],
+  [
+    "scripteasy/src/scripteasy.js~scripteasy",
+    "class/src/scripteasy.js~Scripteasy.html",
+    "<span>Scripteasy</span> <span class=\"search-result-import-path\">scripteasy/src/scripteasy.js</span>",
     "class"
   ],
   [
@@ -381,6 +387,36 @@ window.esdocSearchIndex = [
     "src/scriptease.js~scriptease#scripts",
     "class/src/scriptease.js~Scriptease.html#instance-member-scripts",
     "src/scriptease.js~Scriptease#scripts",
+    "member"
+  ],
+  [
+    "src/scripteasy.js",
+    "file/src/scripteasy.js.html",
+    "src/scripteasy.js",
+    "file"
+  ],
+  [
+    "src/scripteasy.js~scripteasy#constructor",
+    "class/src/scripteasy.js~Scripteasy.html#instance-constructor-constructor",
+    "src/scripteasy.js~Scripteasy#constructor",
+    "method"
+  ],
+  [
+    "src/scripteasy.js~scripteasy#parsescripts",
+    "class/src/scripteasy.js~Scripteasy.html#instance-method-parseScripts",
+    "src/scripteasy.js~Scripteasy#parseScripts",
+    "method"
+  ],
+  [
+    "src/scripteasy.js~scripteasy#run",
+    "class/src/scripteasy.js~Scripteasy.html#instance-method-run",
+    "src/scripteasy.js~Scripteasy#run",
+    "method"
+  ],
+  [
+    "src/scripteasy.js~scripteasy#scripts",
+    "class/src/scripteasy.js~Scripteasy.html#instance-member-scripts",
+    "src/scripteasy.js~Scripteasy#scripts",
     "member"
   ]
 ]

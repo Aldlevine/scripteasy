@@ -1,1 +1,1 @@
-# scriptease
+# scripteasy
