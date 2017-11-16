@@ -566,17 +566,6 @@
   {
     "__docId__": 48,
     "kind": "file",
-    "name": "src/.siggis/mnt/storage/Documents/Projects/scripteasy/src/cli.js",
-    "content": "\n\n",
-    "static": true,
-    "longname": "/mnt/storage/Documents/Projects/scripteasy/src/.siggis/mnt/storage/Documents/Projects/scripteasy/src/cli.js",
-    "access": "public",
-    "description": null,
-    "lineNumber": 1
-  },
-  {
-    "__docId__": 49,
-    "kind": "file",
     "name": "src/cli.js",
     "content": "#!/usr/bin/env node\n\nconst path = require('path');\nconst minimist = require('minimist');\nconst ST = require('./scripteasy');\nconst argv = minimist(process.argv.slice(2));\nconst commands = argv._;\nconst {scripteasy} = require(path.join(process.cwd(), 'package.json'));\nlet st;\n\nif (typeof scripteasy === 'string') {\n  st = ST.fromFile(scripteasy);\n}\nelse {\n  st = new ST(scripteasy);\n}\n\nfor (let command of commands) {\n  const err = st.run(command);\n  if (err) {\n    console.error(`Error executing script '${command}' - \"${err.message}\"`);\n    process.exit(err.status);\n    break;\n  }\n}\n",
     "static": true,
@@ -586,7 +575,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 50,
+    "__docId__": 49,
     "kind": "variable",
     "name": "path",
     "memberof": "src/cli.js",
@@ -607,7 +596,7 @@
     "ignore": true
   },
   {
-    "__docId__": 51,
+    "__docId__": 50,
     "kind": "variable",
     "name": "minimist",
     "memberof": "src/cli.js",
@@ -628,7 +617,7 @@
     "ignore": true
   },
   {
-    "__docId__": 52,
+    "__docId__": 51,
     "kind": "variable",
     "name": "ST",
     "memberof": "src/cli.js",
@@ -649,7 +638,7 @@
     "ignore": true
   },
   {
-    "__docId__": 53,
+    "__docId__": 52,
     "kind": "variable",
     "name": "argv",
     "memberof": "src/cli.js",
@@ -670,7 +659,7 @@
     "ignore": true
   },
   {
-    "__docId__": 54,
+    "__docId__": 53,
     "kind": "variable",
     "name": "commands",
     "memberof": "src/cli.js",
@@ -691,7 +680,7 @@
     "ignore": true
   },
   {
-    "__docId__": 55,
+    "__docId__": 54,
     "kind": "variable",
     "name": "scripteasy",
     "memberof": "src/cli.js",
@@ -712,7 +701,7 @@
     "ignore": true
   },
   {
-    "__docId__": 56,
+    "__docId__": 55,
     "kind": "file",
     "name": "src/script.js",
     "content": "const path = require('path');\nconst {execSync} = require('child_process');\n\nmodule.exports = class Script\n{\n  constructor (st, opts = {})\n  {\n    this.st = st;\n    this.try = [].concat(opts.try||[]);\n    this.catch = [].concat(opts.catch||[]);\n    this.finally = [].concat(opts.finally||[]);\n    this.cwd = opts.cwd || process.cwd();\n    this.env = {...opts.env, ...process.env};\n    this.env.PATH = path.resolve(this.cwd, 'node_modules', '.bin') + path.delimiter + this.env.PATH;\n  }\n\n  run ()\n  {\n    return this._execTry();\n  }\n\n  _exec (command)\n  {\n    if (command in this.st.scripts) {\n      const result = this.st.run(command);\n      if (result) throw result;\n      return;\n    }\n    command = Script._interpolateEnv(command, this.env);\n    const stdout = execSync(command, {\n      cwd: this.cwd,\n      env: this.env,\n      stdio: [0,1,2],\n    });\n  }\n\n  _execTry ()\n  {\n    let result = null;\n    for (let command of this.try) {\n      try {\n        this._exec(command);\n      }\n      catch (err) {\n        this._execCatch();\n        result = err;\n        break;\n      }\n    }\n    this._execFinally();\n    return result;\n  }\n\n  _execCatch ()\n  {\n    for (let command of this.catch) {\n      try {\n        this._exec(command);\n      }\n      catch (err) {\n        return;\n      }\n    }\n  }\n\n  _execFinally ()\n  {\n    for (let command of this.finally) {\n      this._exec(command);\n    }\n  }\n\n  static _interpolateEnv (command, env)\n  {\n    return command.replace(/\\$([a-zA-Z][a-zA-Z0-9_]+)/g, (_, p1) => env[p1]);\n  }\n}\n",
@@ -723,7 +712,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 57,
+    "__docId__": 56,
     "kind": "variable",
     "name": "path",
     "memberof": "src/script.js",
@@ -744,7 +733,7 @@
     "ignore": true
   },
   {
-    "__docId__": 58,
+    "__docId__": 57,
     "kind": "variable",
     "name": "execSync",
     "memberof": "src/script.js",
@@ -765,7 +754,7 @@
     "ignore": true
   },
   {
-    "__docId__": 59,
+    "__docId__": 58,
     "kind": "class",
     "name": "Script",
     "memberof": "src/script.js",
@@ -781,7 +770,7 @@
     "interface": false
   },
   {
-    "__docId__": 60,
+    "__docId__": 59,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/script.js~Script",
@@ -795,7 +784,7 @@
     "undocument": true
   },
   {
-    "__docId__": 61,
+    "__docId__": 60,
     "kind": "member",
     "name": "st",
     "memberof": "src/script.js~Script",
@@ -812,7 +801,7 @@
     }
   },
   {
-    "__docId__": 62,
+    "__docId__": 61,
     "kind": "member",
     "name": "try",
     "memberof": "src/script.js~Script",
@@ -829,7 +818,7 @@
     }
   },
   {
-    "__docId__": 63,
+    "__docId__": 62,
     "kind": "member",
     "name": "catch",
     "memberof": "src/script.js~Script",
@@ -846,7 +835,7 @@
     }
   },
   {
-    "__docId__": 64,
+    "__docId__": 63,
     "kind": "member",
     "name": "finally",
     "memberof": "src/script.js~Script",
@@ -863,7 +852,7 @@
     }
   },
   {
-    "__docId__": 65,
+    "__docId__": 64,
     "kind": "member",
     "name": "cwd",
     "memberof": "src/script.js~Script",
@@ -880,7 +869,7 @@
     }
   },
   {
-    "__docId__": 66,
+    "__docId__": 65,
     "kind": "member",
     "name": "env",
     "memberof": "src/script.js~Script",
@@ -897,7 +886,7 @@
     }
   },
   {
-    "__docId__": 67,
+    "__docId__": 66,
     "kind": "method",
     "name": "run",
     "memberof": "src/script.js~Script",
@@ -917,7 +906,7 @@
     }
   },
   {
-    "__docId__": 68,
+    "__docId__": 67,
     "kind": "method",
     "name": "_exec",
     "memberof": "src/script.js~Script",
@@ -941,7 +930,7 @@
     "return": null
   },
   {
-    "__docId__": 69,
+    "__docId__": 68,
     "kind": "method",
     "name": "_execTry",
     "memberof": "src/script.js~Script",
@@ -962,7 +951,7 @@
     }
   },
   {
-    "__docId__": 70,
+    "__docId__": 69,
     "kind": "method",
     "name": "_execCatch",
     "memberof": "src/script.js~Script",
@@ -979,7 +968,7 @@
     "return": null
   },
   {
-    "__docId__": 71,
+    "__docId__": 70,
     "kind": "method",
     "name": "_execFinally",
     "memberof": "src/script.js~Script",
@@ -996,7 +985,7 @@
     "return": null
   },
   {
-    "__docId__": 72,
+    "__docId__": 71,
     "kind": "method",
     "name": "_interpolateEnv",
     "memberof": "src/script.js~Script",
@@ -1030,7 +1019,7 @@
     }
   },
   {
-    "__docId__": 73,
+    "__docId__": 72,
     "kind": "file",
     "name": "src/scripteasy.js",
     "content": "module.exports = class Scripteasy\n{\n  constructor (scripts)\n  {\n    this.scripts = this.parseScripts(scripts);\n  }\n\n  parseScripts (scripts)\n  {\n    const Script = require('./script');\n    const result = {};\n    for (let name in scripts) {\n      const script = scripts[name];\n      if (Object.is(script.constructor, Object)) {\n        result[name] = new Script(this, script);\n        continue;\n      }\n\n      result[name] = new Script(this, {try: script});\n    }\n    return result;\n  }\n\n  static fromFile (filename)\n  {\n    const fs = require('fs');\n    const path = require('path');\n    let scripts = {};\n\n    if (['.yml', '.yaml'].indexOf(path.extname(filename)) > -1) {\n      const yaml = require('yaml');\n      const data = fs.readFileSync(filename).toString();\n      scripts = yaml.eval(data);\n    }\n    else {\n      scripts = require(filename);\n    }\n    return new Scripteasy(scripts);\n  }\n\n  run (name)\n  {\n    return this.scripts[name].run();\n  }\n}\n",
@@ -1041,7 +1030,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 74,
+    "__docId__": 73,
     "kind": "class",
     "name": "Scripteasy",
     "memberof": "src/scripteasy.js",
@@ -1057,7 +1046,7 @@
     "interface": false
   },
   {
-    "__docId__": 75,
+    "__docId__": 74,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/scripteasy.js~Scripteasy",
@@ -1071,7 +1060,7 @@
     "undocument": true
   },
   {
-    "__docId__": 76,
+    "__docId__": 75,
     "kind": "member",
     "name": "scripts",
     "memberof": "src/scripteasy.js~Scripteasy",
@@ -1088,7 +1077,7 @@
     }
   },
   {
-    "__docId__": 77,
+    "__docId__": 76,
     "kind": "method",
     "name": "parseScripts",
     "memberof": "src/scripteasy.js~Scripteasy",
@@ -1115,7 +1104,7 @@
     }
   },
   {
-    "__docId__": 78,
+    "__docId__": 77,
     "kind": "method",
     "name": "fromFile",
     "memberof": "src/scripteasy.js~Scripteasy",
@@ -1142,7 +1131,7 @@
     }
   },
   {
-    "__docId__": 79,
+    "__docId__": 78,
     "kind": "method",
     "name": "run",
     "memberof": "src/scripteasy.js~Scripteasy",
@@ -1178,7 +1167,7 @@
   },
   {
     "kind": "packageJSON",
-    "content": "{\n  \"name\": \"scripteasy\",\n  \"version\": \"0.0.2\",\n  \"description\": \"The easy script runner\",\n  \"keywords\": [\n    \"automation\",\n    \"build\",\n    \"build system\",\n    \"cli\",\n    \"npm\",\n    \"npm scripts\",\n    \"scripts\",\n    \"task\",\n    \"task runner\"\n  ],\n  \"homepage\": \"https://github.com/Aldlevine/scripteasy#readme\",\n  \"bugs\": { \"url\": \"https://github.com/Aldlevine/scripteasy/issues\" },\n  \"license\": \"MIT\",\n  \"author\": \"Aaron Levine <ald.levine@gmail.com>\",\n  \"main\": \"src/scripteasy.js\",\n  \"bin\": { \"ez\": \"./src/cli.js\" },\n  \"directories\": { \"doc\": \"docs\", \"test\": \"test\" },\n  \"repository\": { \"type\": \"git\", \"url\": \"git+https://github.com/Aldlevine/scripteasy.git\" },\n  \"scripts\": {\n    \"build\": \"node src/cli.js build\",\n    \"precommit\": \"node src/cli.js precommit\",\n    \"commitmsg\": \"node src/cli.js commitmsg\",\n    \"docs\": \"node src/cli.js docs\",\n    \"link\": \"node src/cli.js link\",\n    \"test\": \"node src/cli.js test\",\n    \"update\": \"node ./src/cli.js update\",\n    \"version\": \"node ./src/cli.js version\"\n  },\n  \"config\": { \"commitizen\": { \"path\": \"./node_modules/cz-conventional-changelog\" } },\n  \"dependencies\": { \"minimist\": \"^1.2.0\", \"yaml\": \"^0.3.0\" },\n  \"devDependencies\": {\n    \"@commitlint/cli\": \"^4.3.0\",\n    \"@commitlint/config-angular\": \"^4.3.0\",\n    \"chai\": \"^4.1.2\",\n    \"comptroller\": \"^0.3.0\",\n    \"conventional-changelog-cli\": \"^1.3.4\",\n    \"cz-conventional-changelog\": \"^2.1.0\",\n    \"esdoc\": \"^1.0.4\",\n    \"esdoc-ecmascript-proposal-plugin\": \"^1.0.0\",\n    \"esdoc-node\": \"^1.0.2\",\n    \"esdoc-standard-plugin\": \"^1.0.0\",\n    \"husky\": \"^0.14.3\",\n    \"mocha\": \"^4.0.1\",\n    \"nyc\": \"^11.3.0\"\n  },\n  \"comptroller\": {\n    \"source\": \"src/**/*\",\n    \"dev\": \"test/**/*\",\n    \"pretty\": 80,\n    \"detective\": { \"parse\": { \"plugins\": [ \"objectRestSpread\" ] } }\n  },\n  \"scripteasy\": \"scripts.yml\"\n}",
+    "content": "{\n  \"name\": \"scripteasy\",\n  \"version\": \"0.0.3\",\n  \"description\": \"The easy script runner\",\n  \"keywords\": [\n    \"automation\",\n    \"build\",\n    \"build system\",\n    \"cli\",\n    \"npm\",\n    \"npm scripts\",\n    \"scripts\",\n    \"task\",\n    \"task runner\"\n  ],\n  \"homepage\": \"https://github.com/Aldlevine/scripteasy#readme\",\n  \"bugs\": { \"url\": \"https://github.com/Aldlevine/scripteasy/issues\" },\n  \"license\": \"MIT\",\n  \"author\": \"Aaron Levine <ald.levine@gmail.com>\",\n  \"main\": \"src/scripteasy.js\",\n  \"bin\": { \"ez\": \"./src/cli.js\" },\n  \"directories\": { \"doc\": \"docs\", \"test\": \"test\" },\n  \"repository\": { \"type\": \"git\", \"url\": \"git+https://github.com/Aldlevine/scripteasy.git\" },\n  \"scripts\": {\n    \"build\": \"node src/cli.js build\",\n    \"precommit\": \"node src/cli.js precommit\",\n    \"commitmsg\": \"node src/cli.js commitmsg\",\n    \"docs\": \"node src/cli.js docs\",\n    \"link\": \"node src/cli.js link\",\n    \"test\": \"node src/cli.js test\",\n    \"update\": \"node ./src/cli.js update\",\n    \"version\": \"node ./src/cli.js version\"\n  },\n  \"config\": { \"commitizen\": { \"path\": \"./node_modules/cz-conventional-changelog\" } },\n  \"dependencies\": { \"minimist\": \"^1.2.0\", \"yaml\": \"^0.3.0\" },\n  \"devDependencies\": {\n    \"@commitlint/cli\": \"^4.3.0\",\n    \"@commitlint/config-angular\": \"^4.3.0\",\n    \"chai\": \"^4.1.2\",\n    \"comptroller\": \"^0.3.0\",\n    \"conventional-changelog-cli\": \"^1.3.4\",\n    \"cz-conventional-changelog\": \"^2.1.0\",\n    \"esdoc\": \"^1.0.4\",\n    \"esdoc-ecmascript-proposal-plugin\": \"^1.0.0\",\n    \"esdoc-node\": \"^1.0.2\",\n    \"esdoc-standard-plugin\": \"^1.0.0\",\n    \"husky\": \"^0.14.3\",\n    \"mocha\": \"^4.0.1\",\n    \"nyc\": \"^11.3.0\"\n  },\n  \"comptroller\": {\n    \"source\": \"src/**/*\",\n    \"dev\": \"test/**/*\",\n    \"pretty\": 80,\n    \"detective\": { \"parse\": { \"plugins\": [ \"objectRestSpread\" ] } }\n  },\n  \"scripteasy\": \"scripts.yml\"\n}",
     "longname": "/mnt/storage/Documents/Projects/scripteasy/package.json",
     "name": "package.json",
     "static": true,

@@ -1,3 +1,19 @@
+<a name="0.0.3"></a>
+## [0.0.3](https://github.com/Aldlevine/scripteasy/compare/v0.0.2...v0.0.3) (2017-11-16)
+
+
+### Features
+
+* **cli:** Rename to ez ([84755ac](https://github.com/Aldlevine/scripteasy/commit/84755ac))
+* **scripteasy:** Add option of external scripts file ([e8d52f5](https://github.com/Aldlevine/scripteasy/commit/e8d52f5))
+
+
+### BREAKING CHANGES
+
+* **cli:** The cli command has changed from `tease` to `ez`
+
+
+
 <a name="0.0.2"></a>
 ## [0.0.2](https://github.com/Aldlevine/scripteasy/compare/v0.0.1...v0.0.2) (2017-11-16)
 

@@ -294,12 +294,6 @@ window.esdocSearchIndex = [
     "external"
   ],
   [
-    "src/.siggis/mnt/storage/documents/projects/scripteasy/src/cli.js",
-    "file/src/.siggis/mnt/storage/Documents/Projects/scripteasy/src/cli.js.html",
-    "src/.siggis/mnt/storage/Documents/Projects/scripteasy/src/cli.js",
-    "file"
-  ],
-  [
     "src/cli.js",
     "file/src/cli.js.html",
     "src/cli.js",
