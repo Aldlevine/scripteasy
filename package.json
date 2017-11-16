@@ -1,6 +1,6 @@
 {
   "name": "scripteasy",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "The easy script runner",
   "keywords": [
     "automation",
@@ -18,6 +18,7 @@
   "license": "MIT",
   "author": "Aaron Levine <ald.levine@gmail.com>",
   "main": "src/scripteasy.js",
+  "bin": { "tease": "./src/cli.js" },
   "directories": { "doc": "docs", "test": "test" },
   "repository": { "type": "git", "url": "git+https://github.com/Aldlevine/scripteasy.git" },
   "scripts": {
@@ -47,7 +48,6 @@
     "mocha": "^4.0.1",
     "nyc": "^11.3.0"
   },
-  "bin": { "tease": "./src/cli.js" },
   "comptroller": {
     "source": "src/**/*",
     "dev": "test/**/*",

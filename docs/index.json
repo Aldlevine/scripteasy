@@ -567,9 +567,9 @@
     "__docId__": 48,
     "kind": "file",
     "name": "src/cli.js",
-    "content": "const path = require('path');\nconst minimist = require('minimist');\nconst ST = require('./scripteasy');\nconst argv = minimist(process.argv.slice(2));\nconst commands = argv._;\nconst {scripteasy} = require(path.join(process.cwd(), 'package.json'));\nconst st = new ST(scripteasy);\n\nfor (let command of commands) {\n  const err = st.run(command);\n  if (err) {\n    console.error(`Error executing script '${command}' - \"${err.message}\"`);\n    process.exit(err.status);\n    break;\n  }\n}\n",
+    "content": "#!/usr/bin/env node\n\nconst path = require('path');\nconst minimist = require('minimist');\nconst ST = require('./scripteasy');\nconst argv = minimist(process.argv.slice(2));\nconst commands = argv._;\nconst {scripteasy} = require(path.join(process.cwd(), 'package.json'));\nconst st = new ST(scripteasy);\n\nfor (let command of commands) {\n  const err = st.run(command);\n  if (err) {\n    console.error(`Error executing script '${command}' - \"${err.message}\"`);\n    process.exit(err.status);\n    break;\n  }\n}\n",
     "static": true,
-    "longname": "/mnt/storage/Documents/Projects/scriptease/src/cli.js",
+    "longname": "/mnt/storage/Documents/Projects/scripteasy/src/cli.js",
     "access": "public",
     "description": null,
     "lineNumber": 1
@@ -586,7 +586,7 @@
     "importPath": "scripteasy/src/cli.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 1,
+    "lineNumber": 3,
     "undocument": true,
     "type": {
       "types": [
@@ -607,7 +607,7 @@
     "importPath": "scripteasy/src/cli.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 2,
+    "lineNumber": 4,
     "undocument": true,
     "type": {
       "types": [
@@ -628,7 +628,7 @@
     "importPath": "scripteasy/src/cli.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 3,
+    "lineNumber": 5,
     "undocument": true,
     "type": {
       "types": [
@@ -649,7 +649,7 @@
     "importPath": "scripteasy/src/cli.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 4,
+    "lineNumber": 6,
     "undocument": true,
     "type": {
       "types": [
@@ -670,7 +670,7 @@
     "importPath": "scripteasy/src/cli.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 5,
+    "lineNumber": 7,
     "undocument": true,
     "type": {
       "types": [
@@ -691,7 +691,7 @@
     "importPath": "scripteasy/src/cli.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 6,
+    "lineNumber": 8,
     "undocument": true,
     "type": {
       "types": [
@@ -712,7 +712,7 @@
     "importPath": "scripteasy/src/cli.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 7,
+    "lineNumber": 9,
     "undocument": true,
     "type": {
       "types": [
@@ -727,7 +727,7 @@
     "name": "src/script.js",
     "content": "const {execSync} = require('child_process');\n\nmodule.exports = class Script\n{\n  constructor (st, opts = {})\n  {\n    this.st = st;\n    this.try = [].concat(opts.try||[]);\n    this.catch = [].concat(opts.catch||[]);\n    this.finally = [].concat(opts.finally||[]);\n    this.cwd = opts.cwd || process.cwd();\n    this.env = {...opts.env, ...process.env};\n  }\n\n  run ()\n  {\n    return this._execTry();\n  }\n\n  _exec (command)\n  {\n    if (command in this.st.scripts) {\n      const result = this.st.run(command);\n      if (result) throw result;\n      return;\n    }\n    command = Script._interpolateEnv(command, this.env);\n    const stdout = execSync(command, {\n      cwd: this.cwd,\n      env: this.env,\n      stdio: [0,1,2],\n    });\n  }\n\n  _execTry ()\n  {\n    let result = null;\n    for (let command of this.try) {\n      try {\n        this._exec(command);\n      }\n      catch (err) {\n        this._execCatch();\n        result = err;\n        break;\n      }\n    }\n    this._execFinally();\n    return result;\n  }\n\n  _execCatch ()\n  {\n    for (let command of this.catch) {\n      try {\n        this._exec(command);\n      }\n      catch (err) {\n        return;\n      }\n    }\n  }\n\n  _execFinally ()\n  {\n    for (let command of this.finally) {\n      this._exec(command);\n    }\n  }\n\n  static _interpolateEnv (command, env)\n  {\n    return command.replace(/\\$([a-zA-Z][a-zA-Z0-9_]+)/g, (_, p1) => env[p1]);\n  }\n}\n",
     "static": true,
-    "longname": "/mnt/storage/Documents/Projects/scriptease/src/script.js",
+    "longname": "/mnt/storage/Documents/Projects/scripteasy/src/script.js",
     "access": "public",
     "description": null,
     "lineNumber": 1
@@ -1024,7 +1024,7 @@
     "name": "src/scripteasy.js",
     "content": "const Script = require('./script');\n\nmodule.exports = class Scripteasy\n{\n  constructor (scripts)\n  {\n    this.scripts = this.parseScripts(scripts);\n  }\n\n  parseScripts (scripts)\n  {\n    const result = {};\n    for (let name in scripts) {\n      const script = scripts[name];\n      if (Object.is(script.constructor, Object)) {\n        result[name] = new Script(this, script);\n        continue;\n      }\n\n      result[name] = new Script(this, {try: script});\n    }\n    return result;\n  }\n\n  run (name)\n  {\n    return this.scripts[name].run();\n  }\n}\n",
     "static": true,
-    "longname": "/mnt/storage/Documents/Projects/scriptease/src/scripteasy.js",
+    "longname": "/mnt/storage/Documents/Projects/scripteasy/src/scripteasy.js",
     "access": "public",
     "description": null,
     "lineNumber": 1
@@ -1154,15 +1154,15 @@
   {
     "kind": "index",
     "content": "# scripteasy\n\nThe easy script runner\n\n*More info coming soon* :wink:\n",
-    "longname": "/mnt/storage/Documents/Projects/scriptease/README.md",
+    "longname": "/mnt/storage/Documents/Projects/scripteasy/README.md",
     "name": "./README.md",
     "static": true,
     "access": "public"
   },
   {
     "kind": "packageJSON",
-    "content": "{\n  \"name\": \"scripteasy\",\n  \"version\": \"0.0.1\",\n  \"description\": \"The easy script runner\",\n  \"keywords\": [\n    \"automation\",\n    \"build\",\n    \"build system\",\n    \"cli\",\n    \"npm\",\n    \"npm scripts\",\n    \"scripts\",\n    \"task\",\n    \"task runner\"\n  ],\n  \"homepage\": \"https://github.com/Aldlevine/scripteasy#readme\",\n  \"bugs\": { \"url\": \"https://github.com/Aldlevine/scripteasy/issues\" },\n  \"license\": \"MIT\",\n  \"author\": \"Aaron Levine <ald.levine@gmail.com>\",\n  \"main\": \"src/scripteasy.js\",\n  \"directories\": { \"doc\": \"docs\", \"test\": \"test\" },\n  \"repository\": { \"type\": \"git\", \"url\": \"git+https://github.com/Aldlevine/scripteasy.git\" },\n  \"scripts\": {\n    \"build\": \"node src/cli.js build\",\n    \"precommit\": \"node src/cli.js precommit\",\n    \"commitmsg\": \"node src/cli.js commitmsg\",\n    \"docs\": \"node src/cli.js docs\",\n    \"link\": \"node src/cli.js link\",\n    \"test\": \"node src/cli.js test\",\n    \"update\": \"node ./src/cli.js update\",\n    \"version\": \"node ./src/cli.js version\"\n  },\n  \"config\": { \"commitizen\": { \"path\": \"./node_modules/cz-conventional-changelog\" } },\n  \"dependencies\": { \"minimist\": \"^1.2.0\" },\n  \"devDependencies\": {\n    \"@commitlint/cli\": \"^4.3.0\",\n    \"@commitlint/config-angular\": \"^4.3.0\",\n    \"chai\": \"^4.1.2\",\n    \"comptroller\": \"^0.3.0\",\n    \"conventional-changelog-cli\": \"^1.3.4\",\n    \"cz-conventional-changelog\": \"^2.1.0\",\n    \"esdoc\": \"^1.0.4\",\n    \"esdoc-ecmascript-proposal-plugin\": \"^1.0.0\",\n    \"esdoc-node\": \"^1.0.2\",\n    \"esdoc-standard-plugin\": \"^1.0.0\",\n    \"husky\": \"^0.14.3\",\n    \"mocha\": \"^4.0.1\",\n    \"nyc\": \"^11.3.0\"\n  },\n  \"cli\": { \"tease\": \"./src/cli.js\" },\n  \"comptroller\": {\n    \"source\": \"src/**/*\",\n    \"dev\": \"test/**/*\",\n    \"pretty\": 80,\n    \"detective\": { \"parse\": { \"plugins\": [ \"objectRestSpread\" ] } }\n  },\n  \"scripteasy\": {\n    \"build\": [ \"update\", \"link\", \"test\", \"docs\" ],\n    \"precommit\": {\n      \"try\": [\n        \"git stash save --keep-index -q \\\"precommit stash\\\" || true\",\n        \"build\",\n        \"git add package.json docs\"\n      ],\n      \"catch\": \"echo \\\"An error occured!\\\"\",\n      \"finally\": [ \"git checkout stash -q -- .\", \"git stash drop\" ]\n    },\n    \"commitmsg\": \"commitlint -e $GIT_PARAMS\",\n    \"docs\": \"esdoc\",\n    \"link\": \"comp link\",\n    \"test\": \"nyc mocha\",\n    \"update\": \"comp update -s\",\n    \"version\": [\n      \"conventional-changelog -p angular -i CHANGELOG.md -s -r 0\",\n      \"git add CHANGELOG.md\",\n      \"build\"\n    ]\n  }\n}",
-    "longname": "/mnt/storage/Documents/Projects/scriptease/package.json",
+    "content": "{\n  \"name\": \"scripteasy\",\n  \"version\": \"0.0.2\",\n  \"description\": \"The easy script runner\",\n  \"keywords\": [\n    \"automation\",\n    \"build\",\n    \"build system\",\n    \"cli\",\n    \"npm\",\n    \"npm scripts\",\n    \"scripts\",\n    \"task\",\n    \"task runner\"\n  ],\n  \"homepage\": \"https://github.com/Aldlevine/scripteasy#readme\",\n  \"bugs\": { \"url\": \"https://github.com/Aldlevine/scripteasy/issues\" },\n  \"license\": \"MIT\",\n  \"author\": \"Aaron Levine <ald.levine@gmail.com>\",\n  \"main\": \"src/scripteasy.js\",\n  \"bin\": { \"tease\": \"./src/cli.js\" },\n  \"directories\": { \"doc\": \"docs\", \"test\": \"test\" },\n  \"repository\": { \"type\": \"git\", \"url\": \"git+https://github.com/Aldlevine/scripteasy.git\" },\n  \"scripts\": {\n    \"build\": \"node src/cli.js build\",\n    \"precommit\": \"node src/cli.js precommit\",\n    \"commitmsg\": \"node src/cli.js commitmsg\",\n    \"docs\": \"node src/cli.js docs\",\n    \"link\": \"node src/cli.js link\",\n    \"test\": \"node src/cli.js test\",\n    \"update\": \"node ./src/cli.js update\",\n    \"version\": \"node ./src/cli.js version\"\n  },\n  \"config\": { \"commitizen\": { \"path\": \"./node_modules/cz-conventional-changelog\" } },\n  \"dependencies\": { \"minimist\": \"^1.2.0\" },\n  \"devDependencies\": {\n    \"@commitlint/cli\": \"^4.3.0\",\n    \"@commitlint/config-angular\": \"^4.3.0\",\n    \"chai\": \"^4.1.2\",\n    \"comptroller\": \"^0.3.0\",\n    \"conventional-changelog-cli\": \"^1.3.4\",\n    \"cz-conventional-changelog\": \"^2.1.0\",\n    \"esdoc\": \"^1.0.4\",\n    \"esdoc-ecmascript-proposal-plugin\": \"^1.0.0\",\n    \"esdoc-node\": \"^1.0.2\",\n    \"esdoc-standard-plugin\": \"^1.0.0\",\n    \"husky\": \"^0.14.3\",\n    \"mocha\": \"^4.0.1\",\n    \"nyc\": \"^11.3.0\"\n  },\n  \"comptroller\": {\n    \"source\": \"src/**/*\",\n    \"dev\": \"test/**/*\",\n    \"pretty\": 80,\n    \"detective\": { \"parse\": { \"plugins\": [ \"objectRestSpread\" ] } }\n  },\n  \"scripteasy\": {\n    \"build\": [ \"update\", \"link\", \"test\", \"docs\" ],\n    \"precommit\": {\n      \"try\": [\n        \"git stash save --keep-index -q \\\"precommit stash\\\" || true\",\n        \"build\",\n        \"git add package.json docs\"\n      ],\n      \"catch\": \"echo \\\"An error occured!\\\"\",\n      \"finally\": [ \"git checkout stash -q -- .\", \"git stash drop\" ]\n    },\n    \"commitmsg\": \"commitlint -e $GIT_PARAMS\",\n    \"docs\": \"esdoc\",\n    \"link\": \"comp link\",\n    \"test\": \"nyc mocha\",\n    \"update\": \"comp update -s\",\n    \"version\": [\n      \"conventional-changelog -p angular -i CHANGELOG.md -s -r 0\",\n      \"git add CHANGELOG.md\",\n      \"build\"\n    ]\n  }\n}",
+    "longname": "/mnt/storage/Documents/Projects/scripteasy/package.json",
     "name": "package.json",
     "static": true,
     "access": "public"
