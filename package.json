@@ -1,17 +1,17 @@
 {
   "name": "scripteasy",
-  "version": "0.0.0",
+  "version": "0.0.1-0",
   "description": "The easy script runner",
   "keywords": [
     "automation",
-    "build system",
     "build",
+    "build system",
     "cli",
-    "npm scripts",
     "npm",
+    "npm scripts",
     "scripts",
-    "task runner",
-    "task"
+    "task",
+    "task runner"
   ],
   "homepage": "https://github.com/Aldlevine/scripteasy#readme",
   "bugs": { "url": "https://github.com/Aldlevine/scripteasy/issues" },

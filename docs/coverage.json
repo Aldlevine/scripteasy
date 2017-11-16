@@ -1,6 +1,6 @@
 {
   "coverage": "0%",
-  "expectCount": 34,
+  "expectCount": 28,
   "actualCount": 0,
   "files": {
     "src/cli.js": {
@@ -35,18 +35,6 @@
         52,
         64,
         71
-      ]
-    },
-    "src/scriptease.js": {
-      "expectCount": 6,
-      "actualCount": 0,
-      "undocumentLines": [
-        1,
-        3,
-        5,
-        7,
-        10,
-        25
       ]
     },
     "src/scripteasy.js": {

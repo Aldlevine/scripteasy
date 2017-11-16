@@ -1021,10 +1021,10 @@
   {
     "__docId__": 72,
     "kind": "file",
-    "name": "src/scriptease.js",
-    "content": "const Script = require('./script');\n\nmodule.exports = class Scriptease\n{\n  constructor (scripts)\n  {\n    this.scripts = this.parseScripts(scripts);\n  }\n\n  parseScripts (scripts)\n  {\n    const result = {};\n    for (let name in scripts) {\n      const script = scripts[name];\n      if (Object.is(script.constructor, Object)) {\n        result[name] = new Script(this, script);\n        continue;\n      }\n\n      result[name] = new Script(this, {try: script});\n    }\n    return result;\n  }\n\n  run (name)\n  {\n    return this.scripts[name].run();\n  }\n}\n",
+    "name": "src/scripteasy.js",
+    "content": "const Script = require('./script');\n\nmodule.exports = class Scripteasy\n{\n  constructor (scripts)\n  {\n    this.scripts = this.parseScripts(scripts);\n  }\n\n  parseScripts (scripts)\n  {\n    const result = {};\n    for (let name in scripts) {\n      const script = scripts[name];\n      if (Object.is(script.constructor, Object)) {\n        result[name] = new Script(this, script);\n        continue;\n      }\n\n      result[name] = new Script(this, {try: script});\n    }\n    return result;\n  }\n\n  run (name)\n  {\n    return this.scripts[name].run();\n  }\n}\n",
     "static": true,
-    "longname": "/mnt/storage/Documents/Projects/scriptease/src/scriptease.js",
+    "longname": "/mnt/storage/Documents/Projects/scriptease/src/scripteasy.js",
     "access": "public",
     "description": null,
     "lineNumber": 1
@@ -1033,12 +1033,12 @@
     "__docId__": 73,
     "kind": "variable",
     "name": "Script",
-    "memberof": "src/scriptease.js",
+    "memberof": "src/scripteasy.js",
     "static": true,
-    "longname": "src/scriptease.js~Script",
+    "longname": "src/scripteasy.js~Script",
     "access": "public",
     "export": false,
-    "importPath": "scripteasy/src/scriptease.js",
+    "importPath": "scripteasy",
     "importStyle": null,
     "description": null,
     "lineNumber": 1,
@@ -1053,146 +1053,13 @@
   {
     "__docId__": 74,
     "kind": "class",
-    "name": "Scriptease",
-    "memberof": "src/scriptease.js",
-    "static": true,
-    "longname": "src/scriptease.js~Scriptease",
-    "access": "public",
-    "export": true,
-    "importPath": "scripteasy/src/scriptease.js",
-    "importStyle": "Scriptease",
-    "description": null,
-    "lineNumber": 3,
-    "undocument": true,
-    "interface": false
-  },
-  {
-    "__docId__": 75,
-    "kind": "constructor",
-    "name": "constructor",
-    "memberof": "src/scriptease.js~Scriptease",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/scriptease.js~Scriptease#constructor",
-    "access": "public",
-    "description": null,
-    "lineNumber": 5,
-    "undocument": true
-  },
-  {
-    "__docId__": 76,
-    "kind": "member",
-    "name": "scripts",
-    "memberof": "src/scriptease.js~Scriptease",
-    "static": false,
-    "longname": "src/scriptease.js~Scriptease#scripts",
-    "access": "public",
-    "description": null,
-    "lineNumber": 7,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 77,
-    "kind": "method",
-    "name": "parseScripts",
-    "memberof": "src/scriptease.js~Scriptease",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/scriptease.js~Scriptease#parseScripts",
-    "access": "public",
-    "description": null,
-    "lineNumber": 10,
-    "undocument": true,
-    "params": [
-      {
-        "name": "scripts",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 78,
-    "kind": "method",
-    "name": "run",
-    "memberof": "src/scriptease.js~Scriptease",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/scriptease.js~Scriptease#run",
-    "access": "public",
-    "description": null,
-    "lineNumber": 25,
-    "undocument": true,
-    "params": [
-      {
-        "name": "name",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 79,
-    "kind": "file",
-    "name": "src/scripteasy.js",
-    "content": "const Script = require('./script');\n\nmodule.exports = class Scripteasy\n{\n  constructor (scripts)\n  {\n    this.scripts = this.parseScripts(scripts);\n  }\n\n  parseScripts (scripts)\n  {\n    const result = {};\n    for (let name in scripts) {\n      const script = scripts[name];\n      if (Object.is(script.constructor, Object)) {\n        result[name] = new Script(this, script);\n        continue;\n      }\n\n      result[name] = new Script(this, {try: script});\n    }\n    return result;\n  }\n\n  run (name)\n  {\n    return this.scripts[name].run();\n  }\n}\n",
-    "static": true,
-    "longname": "/mnt/storage/Documents/Projects/scriptease/src/scripteasy.js",
-    "access": "public",
-    "description": null,
-    "lineNumber": 1
-  },
-  {
-    "__docId__": 80,
-    "kind": "variable",
-    "name": "Script",
-    "memberof": "src/scripteasy.js",
-    "static": true,
-    "longname": "src/scripteasy.js~Script",
-    "access": "public",
-    "export": false,
-    "importPath": "scripteasy/src/scripteasy.js",
-    "importStyle": null,
-    "description": null,
-    "lineNumber": 1,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    },
-    "ignore": true
-  },
-  {
-    "__docId__": 81,
-    "kind": "class",
     "name": "Scripteasy",
     "memberof": "src/scripteasy.js",
     "static": true,
     "longname": "src/scripteasy.js~Scripteasy",
     "access": "public",
     "export": true,
-    "importPath": "scripteasy/src/scripteasy.js",
+    "importPath": "scripteasy",
     "importStyle": "Scripteasy",
     "description": null,
     "lineNumber": 3,
@@ -1200,7 +1067,7 @@
     "interface": false
   },
   {
-    "__docId__": 82,
+    "__docId__": 75,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/scripteasy.js~Scripteasy",
@@ -1214,7 +1081,7 @@
     "undocument": true
   },
   {
-    "__docId__": 83,
+    "__docId__": 76,
     "kind": "member",
     "name": "scripts",
     "memberof": "src/scripteasy.js~Scripteasy",
@@ -1231,7 +1098,7 @@
     }
   },
   {
-    "__docId__": 84,
+    "__docId__": 77,
     "kind": "method",
     "name": "parseScripts",
     "memberof": "src/scripteasy.js~Scripteasy",
@@ -1258,7 +1125,7 @@
     }
   },
   {
-    "__docId__": 85,
+    "__docId__": 78,
     "kind": "method",
     "name": "run",
     "memberof": "src/scripteasy.js~Scripteasy",
@@ -1286,7 +1153,7 @@
   },
   {
     "kind": "index",
-    "content": "# scripteasy\n",
+    "content": "# scripteasy\n\nThe easy script runner\n\n*More info coming soon* :wink:\n",
     "longname": "/mnt/storage/Documents/Projects/scriptease/README.md",
     "name": "./README.md",
     "static": true,
@@ -1294,7 +1161,7 @@
   },
   {
     "kind": "packageJSON",
-    "content": "{\n  \"name\": \"scripteasy\",\n  \"version\": \"0.0.0\",\n  \"description\": \"The easy script runner\",\n  \"license\": \"MIT\",\n  \"author\": \"Aaron Levine <ald.levine@gmail.com>\",\n  \"scripts\": {\n    \"build\": \"node src/cli.js build\",\n    \"precommit\": \"node src/cli.js precommit\",\n    \"commitmsg\": \"node src/cli.js commitmsg\",\n    \"docs\": \"node src/cli.js docs\",\n    \"link\": \"node src/cli.js link\",\n    \"test\": \"node src/cli.js test\",\n    \"update\": \"node ./src/cli.js update\",\n    \"version\": \"node ./src/cli.js version\"\n  },\n  \"config\": { \"commitizen\": { \"path\": \"./node_modules/cz-conventional-changelog\" } },\n  \"dependencies\": { \"minimist\": \"^1.2.0\" },\n  \"devDependencies\": {\n    \"@commitlint/cli\": \"^4.3.0\",\n    \"@commitlint/config-angular\": \"^4.3.0\",\n    \"chai\": \"^4.1.2\",\n    \"comptroller\": \"^0.3.0\",\n    \"conventional-changelog-cli\": \"^1.3.4\",\n    \"cz-conventional-changelog\": \"^2.1.0\",\n    \"esdoc\": \"^1.0.4\",\n    \"esdoc-ecmascript-proposal-plugin\": \"^1.0.0\",\n    \"esdoc-node\": \"^1.0.2\",\n    \"esdoc-standard-plugin\": \"^1.0.0\",\n    \"husky\": \"^0.14.3\",\n    \"mocha\": \"^4.0.1\",\n    \"nyc\": \"^11.3.0\"\n  },\n  \"cli\": { \"tease\": \"./src/cli.js\" },\n  \"comptroller\": {\n    \"source\": \"src/**/*\",\n    \"dev\": \"test/**/*\",\n    \"pretty\": 80,\n    \"detective\": { \"parse\": { \"plugins\": [ \"objectRestSpread\" ] } }\n  },\n  \"scripteasy\": {\n    \"build\": [ \"update\", \"link\", \"test\", \"docs\" ],\n    \"precommit\": {\n      \"try\": [\n        \"git checkout HEAD -- docs || true\",\n        \"git stash save --keep-index -q \\\"precommit stash\\\" || true\",\n        \"build\",\n        \"git add package.json docs\"\n      ],\n      \"catch\": \"echo \\\"An error occured!\\\"\",\n      \"finally\": \"git stash pop -q --index || git stash pop -q || true\"\n    },\n    \"commitmsg\": \"commitlint -e $GIT_PARAMS\",\n    \"docs\": \"esdoc\",\n    \"link\": \"comp link\",\n    \"test\": \"nyc mocha\",\n    \"update\": \"comp update -s\",\n    \"version\": [\n      \"conventional-changelog -p angular -i CHANGELOG.md -s -r 0\",\n      \"git add CHANGELOG.md\"\n    ]\n  }\n}",
+    "content": "{\n  \"name\": \"scripteasy\",\n  \"version\": \"0.0.1-0\",\n  \"description\": \"The easy script runner\",\n  \"keywords\": [\n    \"automation\",\n    \"build\",\n    \"build system\",\n    \"cli\",\n    \"npm\",\n    \"npm scripts\",\n    \"scripts\",\n    \"task\",\n    \"task runner\"\n  ],\n  \"homepage\": \"https://github.com/Aldlevine/scripteasy#readme\",\n  \"bugs\": { \"url\": \"https://github.com/Aldlevine/scripteasy/issues\" },\n  \"license\": \"MIT\",\n  \"author\": \"Aaron Levine <ald.levine@gmail.com>\",\n  \"main\": \"src/scripteasy.js\",\n  \"directories\": { \"doc\": \"docs\", \"test\": \"test\" },\n  \"repository\": { \"type\": \"git\", \"url\": \"git+https://github.com/Aldlevine/scripteasy.git\" },\n  \"scripts\": {\n    \"build\": \"node src/cli.js build\",\n    \"precommit\": \"node src/cli.js precommit\",\n    \"commitmsg\": \"node src/cli.js commitmsg\",\n    \"docs\": \"node src/cli.js docs\",\n    \"link\": \"node src/cli.js link\",\n    \"test\": \"node src/cli.js test\",\n    \"update\": \"node ./src/cli.js update\",\n    \"version\": \"node ./src/cli.js version\"\n  },\n  \"config\": { \"commitizen\": { \"path\": \"./node_modules/cz-conventional-changelog\" } },\n  \"dependencies\": { \"minimist\": \"^1.2.0\" },\n  \"devDependencies\": {\n    \"@commitlint/cli\": \"^4.3.0\",\n    \"@commitlint/config-angular\": \"^4.3.0\",\n    \"chai\": \"^4.1.2\",\n    \"comptroller\": \"^0.3.0\",\n    \"conventional-changelog-cli\": \"^1.3.4\",\n    \"cz-conventional-changelog\": \"^2.1.0\",\n    \"esdoc\": \"^1.0.4\",\n    \"esdoc-ecmascript-proposal-plugin\": \"^1.0.0\",\n    \"esdoc-node\": \"^1.0.2\",\n    \"esdoc-standard-plugin\": \"^1.0.0\",\n    \"husky\": \"^0.14.3\",\n    \"mocha\": \"^4.0.1\",\n    \"nyc\": \"^11.3.0\"\n  },\n  \"cli\": { \"tease\": \"./src/cli.js\" },\n  \"comptroller\": {\n    \"source\": \"src/**/*\",\n    \"dev\": \"test/**/*\",\n    \"pretty\": 80,\n    \"detective\": { \"parse\": { \"plugins\": [ \"objectRestSpread\" ] } }\n  },\n  \"scripteasy\": {\n    \"build\": [ \"update\", \"link\", \"test\", \"docs\" ],\n    \"precommit\": {\n      \"try\": [\n        \"git stash save --keep-index -q \\\"precommit stash\\\" || true\",\n        \"build\",\n        \"git add package.json docs\"\n      ],\n      \"catch\": \"echo \\\"An error occured!\\\"\",\n      \"finally\": [ \"git checkout stash -q -- .\", \"git stash drop\" ]\n    },\n    \"commitmsg\": \"commitlint -e $GIT_PARAMS\",\n    \"docs\": \"esdoc\",\n    \"link\": \"comp link\",\n    \"test\": \"nyc mocha\",\n    \"update\": \"comp update -s\",\n    \"version\": [\n      \"conventional-changelog -p angular -i CHANGELOG.md -s -r 0\",\n      \"git add CHANGELOG.md\",\n      \"build\"\n    ]\n  }\n}",
     "longname": "/mnt/storage/Documents/Projects/scriptease/package.json",
     "name": "package.json",
     "static": true,

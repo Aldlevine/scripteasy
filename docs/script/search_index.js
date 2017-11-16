@@ -6,15 +6,9 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
-    "scripteasy/src/scriptease.js~scriptease",
-    "class/src/scriptease.js~Scriptease.html",
-    "<span>Scriptease</span> <span class=\"search-result-import-path\">scripteasy/src/scriptease.js</span>",
-    "class"
-  ],
-  [
-    "scripteasy/src/scripteasy.js~scripteasy",
+    "scripteasy~scripteasy",
     "class/src/scripteasy.js~Scripteasy.html",
-    "<span>Scripteasy</span> <span class=\"search-result-import-path\">scripteasy/src/scripteasy.js</span>",
+    "<span>Scripteasy</span> <span class=\"search-result-import-path\">scripteasy</span>",
     "class"
   ],
   [
@@ -357,36 +351,6 @@ window.esdocSearchIndex = [
     "src/script.js~script#try",
     "class/src/script.js~Script.html#instance-member-try",
     "src/script.js~Script#try",
-    "member"
-  ],
-  [
-    "src/scriptease.js",
-    "file/src/scriptease.js.html",
-    "src/scriptease.js",
-    "file"
-  ],
-  [
-    "src/scriptease.js~scriptease#constructor",
-    "class/src/scriptease.js~Scriptease.html#instance-constructor-constructor",
-    "src/scriptease.js~Scriptease#constructor",
-    "method"
-  ],
-  [
-    "src/scriptease.js~scriptease#parsescripts",
-    "class/src/scriptease.js~Scriptease.html#instance-method-parseScripts",
-    "src/scriptease.js~Scriptease#parseScripts",
-    "method"
-  ],
-  [
-    "src/scriptease.js~scriptease#run",
-    "class/src/scriptease.js~Scriptease.html#instance-method-run",
-    "src/scriptease.js~Scriptease#run",
-    "method"
-  ],
-  [
-    "src/scriptease.js~scriptease#scripts",
-    "class/src/scriptease.js~Scriptease.html#instance-member-scripts",
-    "src/scriptease.js~Scriptease#scripts",
     "member"
   ],
   [
