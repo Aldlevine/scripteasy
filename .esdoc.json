@@ -2,6 +2,7 @@
   "source": "./src",
   "destination": "./docs",
   "plugins": [
+    {"name": "./utils/esdoc-require"},
     {"name": "esdoc-node"},
     {"name": "esdoc-standard-plugin",
      "option": {

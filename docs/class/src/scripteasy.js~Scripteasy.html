@@ -36,13 +36,13 @@
 </nav>
 
 <div class="content" data-ice="content"><div class="header-notice">
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import Scripteasy from &apos;<span><a href="file/src/scripteasy.js.html#lineNumber1">scripteasy</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import Scripteasy from &apos;<span><a href="file/src/scripteasy.js.html#lineNumber5">scripteasy</a></span>&apos;</code></pre></div>
   <span data-ice="access">public</span>
   <span data-ice="kind">class</span>
   
   
   
-  <span data-ice="source">| <span><a href="file/src/scripteasy.js.html#lineNumber1">source</a></span></span>
+  <span data-ice="source">| <span><a href="file/src/scripteasy.js.html#lineNumber5">source</a></span></span>
 </div>
 
 <div class="self-detail detail">
@@ -62,7 +62,9 @@
 
   
   
-  
+  <div class="description" data-ice="description"><p>The main scripteasy class. It serves as an entry point into scripteasy&apos;s
+primary functionality.</p>
+</div>
   
 
   
@@ -93,13 +95,15 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/scripteasy.js~Scripteasy.html#static-method-fromFile">fromFile</a></span></span><span class="code" data-ice="signature">(filename: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/scripteasy.js~Scripteasy.html#static-method-fromFile">fromFile</a></span></span><span class="code" data-ice="signature">(filename: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>): <span><a href="class/src/scripteasy.js~Scripteasy.html">Scripteasy</a></span></span>
         </p>
       </div>
       <div>
         
         
-        
+        <div data-ice="description"><p>Reads scripts from a file and generates a new Scripteasy instance using
+those scripts.</p>
+</div>
       </div>
     </td>
     <td>
@@ -128,13 +132,14 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/scripteasy.js~Scripteasy.html#instance-constructor-constructor">constructor</a></span></span><span class="code" data-ice="signature">()</span>
+          <span class="code" data-ice="name"><span><a href="class/src/scripteasy.js~Scripteasy.html#instance-constructor-constructor">constructor</a></span></span><span class="code" data-ice="signature">(scripts: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></span>)</span>
         </p>
       </div>
       <div>
         
         
-        
+        <div data-ice="description"><p>Creates a new Scripteasy instance.</p>
+</div>
       </div>
     </td>
     <td>
@@ -163,7 +168,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/scripteasy.js~Scripteasy.html#instance-member-scripts">scripts</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/scripteasy.js~Scripteasy.html#instance-member-scripts">scripts</a></span></span><span class="code" data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></span>&lt;<span><a href="class/src/script.js~Script.html">Script</a></span>&gt;</span>
         </p>
       </div>
       <div>
@@ -198,13 +203,14 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/scripteasy.js~Scripteasy.html#instance-method-parseScripts">parseScripts</a></span></span><span class="code" data-ice="signature">(scripts: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/scripteasy.js~Scripteasy.html#instance-method-parseScripts">parseScripts</a></span></span><span class="code" data-ice="signature">(scripts: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></span>&lt;<span><a href="class/src/script.js~Script.html">Script</a></span>&gt;</span>
         </p>
       </div>
       <div>
         
         
-        
+        <div data-ice="description"><p>Parses the scripts for a new Scripteasy instance.</p>
+</div>
       </div>
     </td>
     <td>
@@ -226,13 +232,14 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/scripteasy.js~Scripteasy.html#instance-method-run">run</a></span></span><span class="code" data-ice="signature">(name: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/scripteasy.js~Scripteasy.html#instance-method-run">run</a></span></span><span class="code" data-ice="signature">(name: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error">Error</a></span></span>
         </p>
       </div>
       <div>
         
         
-        
+        <div data-ice="description"><p>Runs a script by name.</p>
+</div>
       </div>
     </td>
     <td>
@@ -257,18 +264,20 @@
     
     
     
-    <span class="code" data-ice="name">fromFile</span><span class="code" data-ice="signature">(filename: <span>*</span>): <span>*</span></span>
+    <span class="code" data-ice="name">fromFile</span><span class="code" data-ice="signature">(filename: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>): <span><a href="class/src/scripteasy.js~Scripteasy.html">Scripteasy</a></span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/scripteasy.js.html#lineNumber24">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/scripteasy.js.html#lineNumber46">source</a></span></span>
     </span>
   </h3>
 
   
   
   
-  
+  <div data-ice="description"><p>Reads scripts from a file and generates a new Scripteasy instance using
+those scripts.</p>
+</div>
 
   
 
@@ -282,9 +291,10 @@
     
     <tr data-ice="property" data-depth="0">
       <td data-ice="name" class="code" data-depth="0">filename</td>
-      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="type" class="code"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></td>
       <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
+      <td data-ice="description"><p>The name of the file.</p>
+</td>
     </tr>
 </tbody>
   </table>
@@ -296,8 +306,9 @@
     <table>
       <tbody>
         <tr>
-          <td class="return-type code" data-ice="returnType"><span>*</span></td>
-          
+          <td class="return-type code" data-ice="returnType"><span><a href="class/src/scripteasy.js~Scripteasy.html">Scripteasy</a></span></td>
+          <td class="return-desc" data-ice="returnDescription"><p>A new Scripteasy instance.</p>
+</td>
         </tr>
       </tbody>
     </table>
@@ -331,22 +342,42 @@
     
     
     
-    <span class="code" data-ice="name">constructor</span><span class="code" data-ice="signature">()</span>
+    <span class="code" data-ice="name">constructor</span><span class="code" data-ice="signature">(scripts: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></span>)</span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/scripteasy.js.html#lineNumber3">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/scripteasy.js.html#lineNumber13">source</a></span></span>
     </span>
   </h3>
 
   
   
   
-  
+  <div data-ice="description"><p>Creates a new Scripteasy instance.</p>
+</div>
 
   
 
-  <div data-ice="properties">
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">scripts</td>
+      <td data-ice="type" class="code"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"><p>A map of scripts keyed by name. Each top level
+value is passed into the <code>Script</code> constructor as either the whole <code>opts</code>
+object or as the <code>opts.try</code> value.</p>
+</td>
+    </tr>
+</tbody>
+  </table>
+</div>
 </div>
 
   
@@ -377,11 +408,11 @@
     
     
     
-    <span class="code" data-ice="name">scripts</span><span class="code" data-ice="signature">: <span>*</span></span>
+    <span class="code" data-ice="name">scripts</span><span class="code" data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></span>&lt;<span><a href="class/src/script.js~Script.html">Script</a></span>&gt;</span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/scripteasy.js.html#lineNumber5">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/scripteasy.js.html#lineNumber16">source</a></span></span>
     </span>
   </h3>
 
@@ -423,18 +454,19 @@
     
     
     
-    <span class="code" data-ice="name">parseScripts</span><span class="code" data-ice="signature">(scripts: <span>*</span>): <span>*</span></span>
+    <span class="code" data-ice="name">parseScripts</span><span class="code" data-ice="signature">(scripts: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></span>&lt;<span><a href="class/src/script.js~Script.html">Script</a></span>&gt;</span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/scripteasy.js.html#lineNumber8">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/scripteasy.js.html#lineNumber24">source</a></span></span>
     </span>
   </h3>
 
   
   
   
-  
+  <div data-ice="description"><p>Parses the scripts for a new Scripteasy instance.</p>
+</div>
 
   
 
@@ -448,9 +480,10 @@
     
     <tr data-ice="property" data-depth="0">
       <td data-ice="name" class="code" data-depth="0">scripts</td>
-      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="type" class="code"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></span></td>
       <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
+      <td data-ice="description"><p>A map of scripts.</p>
+</td>
     </tr>
 </tbody>
   </table>
@@ -462,8 +495,9 @@
     <table>
       <tbody>
         <tr>
-          <td class="return-type code" data-ice="returnType"><span>*</span></td>
-          
+          <td class="return-type code" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></span>&lt;<span><a href="class/src/script.js~Script.html">Script</a></span>&gt;</td>
+          <td class="return-desc" data-ice="returnDescription"><p>The parsed scripts.</p>
+</td>
         </tr>
       </tbody>
     </table>
@@ -494,18 +528,19 @@
     
     
     
-    <span class="code" data-ice="name">run</span><span class="code" data-ice="signature">(name: <span>*</span>): <span>*</span></span>
+    <span class="code" data-ice="name">run</span><span class="code" data-ice="signature">(name: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error">Error</a></span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/scripteasy.js.html#lineNumber41">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/scripteasy.js.html#lineNumber68">source</a></span></span>
     </span>
   </h3>
 
   
   
   
-  
+  <div data-ice="description"><p>Runs a script by name.</p>
+</div>
 
   
 
@@ -519,9 +554,10 @@
     
     <tr data-ice="property" data-depth="0">
       <td data-ice="name" class="code" data-depth="0">name</td>
-      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="type" class="code"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></td>
       <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
+      <td data-ice="description"><p>The name of the script to run.</p>
+</td>
     </tr>
 </tbody>
   </table>
@@ -533,8 +569,9 @@
     <table>
       <tbody>
         <tr>
-          <td class="return-type code" data-ice="returnType"><span>*</span></td>
-          
+          <td class="return-type code" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error">Error</a></span></td>
+          <td class="return-desc" data-ice="returnDescription"><p>If an error occurs, the error is returned.</p>
+</td>
         </tr>
       </tbody>
     </table>

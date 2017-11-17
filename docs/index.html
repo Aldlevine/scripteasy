@@ -35,8 +35,125 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="scripteasy">scripteasy</h1><p>The easy script runner</p>
-<p><em>More info coming soon</em> :wink:</p>
+<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="scripteasy">scripteasy</h1><p><a href="https://www.npmjs.com/package/scripteasy"><img src="https://img.shields.io/npm/v/scripteasy.svg" alt="npm (scoped)"></a>
+<a href="https://aldlevine.github.io/scripteasy/source.html"><img src="https://aldlevine.github.io/scripteasy/badge.svg" alt="Docs Status"></a></p>
+<p>The easy script runner</p>
+<h2 id="where-">Where?</h2><pre><code><code class="source-code prettyprint">npm i scripteasy</code>
+</code></pre><h2 id="what-">What?</h2><p>scripteasy is an easy way to write and run npm scripts. Scripts can be housed in
+the <code>package.json</code> or a separate JS/JSON or YAML file (and then specified in the
+<code>package.json</code>).</p>
+<h2 id="why-">Why?</h2><p>Sometimes a full blown task runner (Gulp, taskr, et al) is more than a project
+calls for. While they can provide fast and powerful tools, the overhead and
+dependency limitations can sometimes make them undesireable. Npm scripts can
+serve as a quick and dirty, and (due to the power of shell scripting)
+surpisingly capable tool. However, npm scripts can get ugly (linebreak much?),
+they need special care to call themselves cross platform compatible
+(particularly when dealing with env vars), and they have no simple approach to
+manage control flow.</p>
+<p>The goal of scripteasy is to bring the flexibility and portability of a fully
+fledged task runner into the world of npm scripts and make scripting itself more
+intuitive and, dare we say it, fun!</p>
+<h2 id="how-">How?</h2><h3 id="like-json-">Like JSON?</h3><p>Then add your scripts directly to your <code>package.json</code>,</p>
+<pre><code class="lang-json"><code class="source-code prettyprint">{
+  &quot;scripteasy&quot;: {
+    &quot;build&quot;: [ &quot;test&quot;, &quot;docs&quot; ],
+    &quot;precommit&quot;: {
+      &quot;try&quot;: [
+        &quot;git stash save --keep-index -q \&quot;precommit stash\&quot;&quot;,
+        &quot;build&quot;,
+        &quot;git add docs&quot;
+      ],
+      &quot;catch&quot;: &quot;echo \&quot;something went wrong!\&quot;&quot;,
+      &quot;finally&quot;: [
+        &quot;git stash pop --index -q&quot;,
+        &quot;echo \&quot;All done!\&quot;&quot;
+      ]
+    },
+    &quot;test&quot;: &quot;nyc mocha&quot;,
+    &quot;docs&quot;: &quot;esdoc&quot;
+  }
+}</code>
+</code></pre>
+<p>or create a separate JSON file and reference it in your <code>package.json</code>.</p>
+<pre><code class="lang-json"><code class="source-code prettyprint">{
+  &quot;scripteasy&quot;: &quot;scripts.json&quot;
+}</code>
+</code></pre>
+<h3 id="like-js-">Like JS?</h3><p>Then create an external JS file,</p>
+<pre><code class="lang-javascript"><code class="source-code prettyprint">exports.build = [ &apos;test&apos;, &apos;docs&apos; ];
+
+exports.precommit = {
+  try: [
+    &apos;git stash save --keep-index -q &quot;precommit stash&quot;&apos;,
+    &apos;build&apos;,
+    &apos;git add docs&apos;,
+  ],
+  catch: &apos;echo &quot;something went wrong!&quot;&apos;,
+  finally: [
+    &apos;git stash pop --index -q&apos;,
+    &apos;echo &quot;All done!&quot;&apos;,
+  ],
+  test: &apos;nyc mocha&apos;,
+  docs: &apos;esdoc&apos;,
+}</code>
+</code></pre>
+<p>and add <strong>that</strong> to your <code>package.json</code>.</p>
+<pre><code class="lang-json"><code class="source-code prettyprint">{
+  &quot;scripteasy&quot;: &quot;scripts.js&quot;
+}</code>
+</code></pre>
+<h3 id="like-yaml-">Like YAML?</h3><p>Then (I think you know where this is going) create an external YAML file</p>
+<pre><code class="lang-yaml"><code class="source-code prettyprint">build:
+  - test
+  - docs
+
+precommit:
+  try:
+    - git stash save --keep-index -q &quot;precommit stash&quot;
+    - build
+    - git add docs
+  catch: echo &quot;something went wrong!&quot;
+  finally:
+    - git stash pop --index -q
+    - echo &quot;All done!&quot;
+
+test: nyc mocha
+
+docs: esdoc</code>
+</code></pre>
+<blockquote>
+<p>If it is possible to cut a word out, always cut it out.
+-- &lt;cite&gt;George Orwell&lt;/cite&gt;</p>
+</blockquote>
+<p>... yada yada yada, <code>package.json</code></p>
+<pre><code class="lang-json"><code class="source-code prettyprint">{
+  &quot;scripteasy&quot;: &quot;scripts.yml&quot;
+}</code>
+</code></pre>
+<h3 id="like-actually-running-your-scripts-">Like actually running your scripts?</h3><h4 id="try-the-cli">Try the CLI</h4><pre><code><code class="source-code prettyprint">ez build</code>
+</code></pre><pre><code><code class="source-code prettyprint">ez test docs</code>
+</code></pre><h4 id="take-a-look-at-a-hook">Take a look at a hook</h4><pre><code class="lang-json"><code class="source-code prettyprint">{
+  &quot;scripts&quot;: {
+    &quot;precommit&quot;: &quot;ez precommit&quot;
+  }
+}</code>
+</code></pre>
+<h3 id="psst-">Psst!</h3><h6 id="-em-wanna-know-a-secret---em-"><em>Wanna know a secret?</em></h6><p>Specify your env vars as a property.</p>
+<pre><code class="lang-json"><code class="source-code prettyprint">{
+  &quot;scripteasy&quot;: {
+    &quot;sayyes&quot;: {
+      &quot;try&quot;: &quot;echo \&quot;$YES\&quot;&quot;,
+      &quot;env&quot;: { &quot;YES&quot;: &quot;If you say so&quot; }
+    }
+  }
+}</code>
+</code></pre>
+<pre><code><code class="source-code prettyprint">$ ez sayyes
+&gt; If you say so
+$ YES=no ez sayyes
+&gt; no</code>
+</code></pre><h2 id="who-">Who?</h2><p>You?</p>
+<h2 id="when-">When?</h2><p>Why not now?</p>
 </div>
 </div>
 

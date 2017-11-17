@@ -3,9 +3,16 @@
 const path = require('path');
 const minimist = require('minimist');
 const ST = require('./scripteasy');
+
+/** @type {object} */
 const argv = minimist(process.argv.slice(2));
+
+/** @type {Array<string>} */
 const commands = argv._;
+
+/** @type {object | string} */
 const {scripteasy} = require(path.join(process.cwd(), 'package.json'));
+
 let st;
 
 if (typeof scripteasy === 'string') {
