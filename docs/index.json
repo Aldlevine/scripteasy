@@ -567,7 +567,7 @@
     "__docId__": 48,
     "kind": "file",
     "name": "src/cli.js",
-    "content": "#!/usr/bin/env node\n\nconst path = require('path');\nconst minimist = require('minimist');\nconst ST = require('./scripteasy');\n\n/** @type {object} */\nconst argv = minimist(process.argv.slice(2));\n\n/** @type {Array<string>} */\nconst commands = argv._;\n\n/** @type {object | string} */\nconst {scripteasy} = require(path.join(process.cwd(), 'package.json'));\n\nlet st;\n\nif (typeof scripteasy === 'string') {\n  st = ST.fromFile(scripteasy);\n}\nelse {\n  st = new ST(scripteasy);\n}\n\nfor (let command of commands) {\n  const err = st.run(command);\n  if (err) {\n    console.error(`Error executing script '${command}' - \"${err.message}\"`);\n    process.exit(err.status);\n    break;\n  }\n}\n",
+    "content": "#!/usr/bin/env node\n\nconst path = require('path');\n// const minimist = require('minimist');\nconst ST = require('./scripteasy');\n\n/** @type {Array<string>} */\nconst argv = process.argv.slice(2);\n\n/** @type {Array<Array<string>>} */\nconst commands = argv.join(' ').split(' -- ').map(s => s.trim().split(' '));\n\n/** @type {object | string} */\nconst {scripteasy} = require(path.join(process.cwd(), 'package.json'));\n\nlet st;\n\nif (typeof scripteasy === 'string') {\n  st = ST.fromFile(scripteasy);\n}\nelse {\n  st = new ST(scripteasy);\n}\n\nfor (let command of commands) {\n  const args = command.slice(1);\n  const err = st.run(command[0], args);\n  if (err) {\n    console.error(`Error executing script '${command}' - \"${err.message}\"`);\n    process.exit(err.status);\n    break;\n  }\n}\n",
     "static": true,
     "longname": "/mnt/storage/Documents/Projects/scripteasy/src/cli.js",
     "access": "public",
@@ -590,7 +590,7 @@
     "type": {
       "nullable": null,
       "types": [
-        "object"
+        "Array<string>"
       ],
       "spread": false,
       "description": null
@@ -613,7 +613,7 @@
     "type": {
       "nullable": null,
       "types": [
-        "Array<string>"
+        "Array<Array<string>>"
       ],
       "spread": false,
       "description": null
@@ -648,7 +648,7 @@
     "__docId__": 52,
     "kind": "file",
     "name": "src/script.js",
-    "content": "const path = require('path');\nconst {execSync} = require('child_process');\n\n/**\n * A class that represents the commands, control flow, and context of a singe\n * script.\n */\nmodule.exports = class Script\n{\n  /**\n   * Creates a new Script instance.\n   *\n   * @param {Scripteasy} st - The parent Scripteasy instance.\n   * @param {object} [opts = {}] - The script configuration options.\n   * @param {Array<string> | string} [opts.try = []] - The main script commands.\n   * @param {Array<string> | string} [opts.catch = []] - The catch block\n   * commands that will run if the try block fails.\n   * @param {Array<string> | string} [opts.finally = []] - The finally block\n   * commands that will always run after the try/ctch blocks.\n   * @param {string} [opts.cwd = process.cwd()] - The current working dir the\n   * script should run in.\n   * @param {object} [opts.env = {}] - The environment variables to pass in.\n   * These will not override environment variables in the current context.\n   */\n  constructor (st, opts = {})\n  {\n    /** @type {Scripteasy} */\n    this.st = st;\n\n    /** @type {Array<string>} */\n    this.try = [].concat(opts.try||[]);\n\n    /** @type {Array<string>} */\n    this.catch = [].concat(opts.catch||[]);\n\n    /** @type {Array<string>} */\n    this.finally = [].concat(opts.finally||[]);\n\n    /** @type {string} */\n    this.cwd = opts.cwd || process.cwd();\n\n    /** @type {object} */\n    this.env = {...opts.env, ...process.env};\n\n    this.env.PATH = path.resolve(this.cwd, 'node_modules', '.bin') + path.delimiter + this.env.PATH;\n  }\n\n  /**\n   * Runs the script.\n   * @return {Error?} - If an error occurs, the error is returned.\n   */\n  run ()\n  {\n    return this._execTry();\n  }\n\n  /**\n   * Executes a single command.\n   * @param {string} command The command to execute.\n   */\n  _exec (command)\n  {\n    if (command in this.st.scripts) {\n      const result = this.st.run(command);\n      if (result) throw result;\n      return;\n    }\n    command = Script._interpolateEnv(command, this.env);\n    const stdout = execSync(command, {\n      cwd: this.cwd,\n      env: this.env,\n      stdio: [0,1,2],\n    });\n  }\n\n  /**\n   * Executes the script's try block. On error the catch block is invoked.\n   * After everything (error or no) the finally block is invoked.\n   * @return {Error?} - If an error occurs, the error is returned.\n   */\n  _execTry ()\n  {\n    let result = null;\n    for (let command of this.try) {\n      try {\n        this._exec(command);\n      }\n      catch (err) {\n        this._execCatch();\n        result = err;\n        break;\n      }\n    }\n    this._execFinally();\n    return result;\n  }\n\n  /**\n   * Executes the catch block.\n   */\n  _execCatch ()\n  {\n    for (let command of this.catch) {\n      try {\n        this._exec(command);\n      }\n      catch (err) {\n        return;\n      }\n    }\n  }\n\n  /**\n   * Executes the finally block.\n   */\n  _execFinally ()\n  {\n    for (let command of this.finally) {\n      this._exec(command);\n    }\n  }\n\n  /**\n   * Replaces the environment variable invocations in a script, such as\n   * `$MYVAR` with the value in the script's environment.\n   * @param {string} command - The command to have the env vars replaced in.\n   * @param {object} env - A map of the env vars to use.\n   * @returns {string} - The command after env vars have been interpolated.\n   */\n  static _interpolateEnv (command, env)\n  {\n    return command.replace(/\\$([a-zA-Z][a-zA-Z0-9_]+)/g, (_, p1) => env[p1]);\n  }\n}\n",
+    "content": "const path = require('path');\nconst {execSync} = require('child_process');\n\n/**\n * A class that represents the commands, control flow, and context of a singe\n * script.\n */\nmodule.exports = class Script\n{\n  /**\n   * Creates a new Script instance.\n   *\n   * @param {Scripteasy} st - The parent Scripteasy instance.\n   * @param {object} [opts = {}] - The script configuration options.\n   * @param {Array<string> | string} [opts.try = []] - The main script commands.\n   * @param {Array<string> | string} [opts.catch = []] - The catch block\n   * commands that will run if the try block fails.\n   * @param {Array<string> | string} [opts.finally = []] - The finally block\n   * commands that will always run after the try/ctch blocks.\n   * @param {string} [opts.cwd = process.cwd()] - The current working dir the\n   * script should run in.\n   * @param {object} [opts.env = {}] - The environment variables to pass in.\n   * These will not override environment variables in the current context.\n   */\n  constructor (st, opts = {})\n  {\n    /** @type {Scripteasy} */\n    this.st = st;\n\n    /** @type {Array<string>} */\n    this.try = [].concat(opts.try||[]);\n\n    /** @type {Array<string>} */\n    this.catch = [].concat(opts.catch||[]);\n\n    /** @type {Array<string>} */\n    this.finally = [].concat(opts.finally||[]);\n\n    /** @type {string} */\n    this.cwd = opts.cwd || process.cwd();\n\n    /** @type {object} */\n    this.env = {...opts.env, ...process.env};\n\n    this.env.PATH = path.resolve(this.cwd, 'node_modules', '.bin') + path.delimiter + this.env.PATH;\n  }\n\n  /**\n   * Runs the script.\n   * @param {Array<string>} [args] - The args to pass into the command.\n   * @return {Error?} - If an error occurs, the error is returned.\n   */\n  run (args)\n  {\n    return this._execTry(args);\n  }\n\n  /**\n   * Executes a single command.\n   * @param {string} command The command to execute.\n   * @param {Array<string>} [args] - The args to pass into the command.\n   */\n  _exec (command, args)\n  {\n    if (command in this.st.scripts) {\n      const result = this.st.run(command);\n      if (result) throw result;\n      return;\n    }\n    if (args) {\n      command = Script._interpolateArgs(command, args);\n    }\n    command = Script._interpolateEnv(command, this.env);\n    const stdout = execSync(command, {\n      cwd: this.cwd,\n      env: this.env,\n      stdio: [0,1,2],\n    });\n  }\n\n  /**\n   * Executes the script's try block. On error the catch block is invoked.\n   * After everything (error or no) the finally block is invoked.\n   * @param {Array<string>} [args] - The args to pass into the command.\n   * @return {Error?} - If an error occurs, the error is returned.\n   */\n  _execTry (args)\n  {\n    let result = null;\n    for (let command of this.try) {\n      try {\n        this._exec(command, args);\n      }\n      catch (err) {\n        this._execCatch(args);\n        result = err;\n        break;\n      }\n    }\n    this._execFinally(args);\n    return result;\n  }\n\n  /**\n   * Executes the catch block.\n   */\n  _execCatch (args)\n  {\n    for (let command of this.catch) {\n      try {\n        this._exec(command, args);\n      }\n      catch (err) {\n        return;\n      }\n    }\n  }\n\n  /**\n   * Executes the finally block.\n   */\n  _execFinally (args)\n  {\n    for (let command of this.finally) {\n      this._exec(command, args);\n    }\n  }\n\n  /**\n   * Replaces the environment variable invocations in a script, such as\n   * `$MYVAR` with the value in the script's environment.\n   * @param {string} command - The command to have the env vars replaced in.\n   * @param {object} env - A map of the env vars to use.\n   * @returns {string} - The command after env vars have been interpolated.\n   */\n  static _interpolateEnv (command, env)\n  {\n    return command.replace(/\\$([a-zA-Z][a-zA-Z0-9_]+)/g, (_, p1) => env[p1]);\n  }\n\n  /**\n   * Replaces args placeholders with the arg values.\n   * @param {string} command - The command to have the args replaced in.\n   * @param {Array<string>} args - An array of args.\n   * @returns {string} - The command after args have been interpolated.\n   */\n  static _interpolateArgs (command, args)\n  {\n    return command\n      .replace(/\\$@/g, args.join(' '))\n      .replace(/\\$\\d+/g, (match) => {\n        const idx = Number(match.replace(/\\$/, ''));\n        return args[idx] || '';\n      });\n  }\n}\n",
     "static": true,
     "longname": "/mnt/storage/Documents/Projects/scripteasy/src/script.js",
     "access": "public",
@@ -895,7 +895,19 @@
     "longname": "src/script.js~Script#run",
     "access": "public",
     "description": "Runs the script.",
-    "lineNumber": 52,
+    "lineNumber": 53,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Array<string>"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "args",
+        "description": "The args to pass into the command."
+      }
+    ],
     "return": {
       "nullable": null,
       "types": [
@@ -903,8 +915,7 @@
       ],
       "spread": false,
       "description": "If an error occurs, the error is returned."
-    },
-    "params": []
+    }
   },
   {
     "__docId__": 62,
@@ -917,7 +928,7 @@
     "longname": "src/script.js~Script#_exec",
     "access": "private",
     "description": "Executes a single command.",
-    "lineNumber": 61,
+    "lineNumber": 63,
     "params": [
       {
         "nullable": null,
@@ -928,6 +939,16 @@
         "optional": false,
         "name": "command",
         "description": "The command to execute."
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Array<string>"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "args",
+        "description": "The args to pass into the command."
       }
     ],
     "ignore": true,
@@ -944,7 +965,19 @@
     "longname": "src/script.js~Script#_execTry",
     "access": "private",
     "description": "Executes the script's try block. On error the catch block is invoked.\nAfter everything (error or no) the finally block is invoked.",
-    "lineNumber": 81,
+    "lineNumber": 87,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Array<string>"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "args",
+        "description": "The args to pass into the command."
+      }
+    ],
     "return": {
       "nullable": null,
       "types": [
@@ -953,8 +986,7 @@
       "spread": false,
       "description": "If an error occurs, the error is returned."
     },
-    "ignore": true,
-    "params": []
+    "ignore": true
   },
   {
     "__docId__": 64,
@@ -967,9 +999,16 @@
     "longname": "src/script.js~Script#_execCatch",
     "access": "private",
     "description": "Executes the catch block.",
-    "lineNumber": 101,
+    "lineNumber": 107,
     "ignore": true,
-    "params": [],
+    "params": [
+      {
+        "name": "args",
+        "types": [
+          "*"
+        ]
+      }
+    ],
     "return": null
   },
   {
@@ -983,9 +1022,16 @@
     "longname": "src/script.js~Script#_execFinally",
     "access": "private",
     "description": "Executes the finally block.",
-    "lineNumber": 116,
+    "lineNumber": 122,
     "ignore": true,
-    "params": [],
+    "params": [
+      {
+        "name": "args",
+        "types": [
+          "*"
+        ]
+      }
+    ],
     "return": null
   },
   {
@@ -999,7 +1045,7 @@
     "longname": "src/script.js~Script._interpolateEnv",
     "access": "private",
     "description": "Replaces the environment variable invocations in a script, such as\n`$MYVAR` with the value in the script's environment.",
-    "lineNumber": 130,
+    "lineNumber": 136,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1040,9 +1086,59 @@
   },
   {
     "__docId__": 67,
+    "kind": "method",
+    "name": "_interpolateArgs",
+    "memberof": "src/script.js~Script",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/script.js~Script._interpolateArgs",
+    "access": "private",
+    "description": "Replaces args placeholders with the arg values.",
+    "lineNumber": 147,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{string} - The command after args have been interpolated."
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "command",
+        "description": "The command to have the args replaced in."
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Array<string>"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "args",
+        "description": "An array of args."
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "string"
+      ],
+      "spread": false,
+      "description": "The command after args have been interpolated."
+    },
+    "ignore": true
+  },
+  {
+    "__docId__": 68,
     "kind": "file",
     "name": "src/scripteasy.js",
-    "content": "/**\n * The main scripteasy class. It serves as an entry point into scripteasy's\n * primary functionality.\n */\nmodule.exports = class Scripteasy\n{\n  /**\n   * Creates a new Scripteasy instance.\n   * @param {object} scripts - A map of scripts keyed by name. Each top level\n   * value is passed into the `Script` constructor as either the whole `opts`\n   * object or as the `opts.try` value.\n   */\n  constructor (scripts)\n  {\n    /** @type {Array<Script>} */\n    this.scripts = this.parseScripts(scripts);\n  }\n\n  /**\n   * Parses the scripts for a new Scripteasy instance.\n   * @param {object} scripts - A map of scripts.\n   * @returns {Array<Script>} - The parsed scripts.\n   */\n  parseScripts (scripts)\n  {\n    const Script = require('./script');\n    const result = {};\n    for (let name in scripts) {\n      const script = scripts[name];\n      if (Object.is(script.constructor, Object)) {\n        result[name] = new Script(this, script);\n        continue;\n      }\n\n      result[name] = new Script(this, {try: script});\n    }\n    return result;\n  }\n\n  /**\n   * Reads scripts from a file and generates a new Scripteasy instance using\n   * those scripts.\n   * @param {string} filename - The name of the file.\n   * @returns {Scripteasy} - A new Scripteasy instance.\n   */\n  static fromFile (filename)\n  {\n    const fs = require('fs');\n    const path = require('path');\n    let scripts = {};\n\n    if (['.yml', '.yaml'].indexOf(path.extname(filename)) > -1) {\n      const yaml = require('yaml');\n      const data = fs.readFileSync(filename).toString();\n      scripts = yaml.eval(data);\n    }\n    else {\n      scripts = require(path.resolve(process.cwd(), filename));\n    }\n    return new Scripteasy(scripts);\n  }\n\n  /**\n   * Runs a script by name.\n   * @param {string} name - The name of the script to run.\n   * @return {Error?} - If an error occurs, the error is returned.\n   */\n  run (name)\n  {\n    return this.scripts[name].run();\n  }\n}\n",
+    "content": "/**\n * The main scripteasy class. It serves as an entry point into scripteasy's\n * primary functionality.\n */\nmodule.exports = class Scripteasy\n{\n  /**\n   * Creates a new Scripteasy instance.\n   * @param {object} scripts - A map of scripts keyed by name. Each top level\n   * value is passed into the `Script` constructor as either the whole `opts`\n   * object or as the `opts.try` value.\n   */\n  constructor (scripts)\n  {\n    /** @type {Array<Script>} */\n    this.scripts = this.parseScripts(scripts);\n  }\n\n  /**\n   * Parses the scripts for a new Scripteasy instance.\n   * @param {object} scripts - A map of scripts.\n   * @returns {Array<Script>} - The parsed scripts.\n   */\n  parseScripts (scripts)\n  {\n    const Script = require('./script');\n    const result = {};\n    for (let name in scripts) {\n      const script = scripts[name];\n      if (Object.is(script.constructor, Object)) {\n        result[name] = new Script(this, script);\n        continue;\n      }\n\n      result[name] = new Script(this, {try: script});\n    }\n    return result;\n  }\n\n  /**\n   * Reads scripts from a file and generates a new Scripteasy instance using\n   * those scripts.\n   * @param {string} filename - The name of the file.\n   * @returns {Scripteasy} - A new Scripteasy instance.\n   */\n  static fromFile (filename)\n  {\n    const fs = require('fs');\n    const path = require('path');\n    let scripts = {};\n\n    if (['.yml', '.yaml'].indexOf(path.extname(filename)) > -1) {\n      const yaml = require('yaml');\n      const data = fs.readFileSync(filename).toString();\n      scripts = yaml.eval(data);\n    }\n    else {\n      scripts = require(path.resolve(process.cwd(), filename));\n    }\n    return new Scripteasy(scripts);\n  }\n\n  /**\n   * Runs a script by name.\n   * @param {string} name - The name of the script to run.\n   * @param {Array<string>} [args] - The args to pass into the script.\n   * @return {Error?} - If an error occurs, the error is returned.\n   */\n  run (name, args)\n  {\n    return this.scripts[name].run(args);\n  }\n}\n",
     "static": true,
     "longname": "/mnt/storage/Documents/Projects/scripteasy/src/scripteasy.js",
     "access": "public",
@@ -1050,7 +1146,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 68,
+    "__docId__": 69,
     "kind": "class",
     "name": "Scripteasy",
     "memberof": "src/scripteasy.js",
@@ -1065,7 +1161,7 @@
     "interface": false
   },
   {
-    "__docId__": 69,
+    "__docId__": 70,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/scripteasy.js~Scripteasy",
@@ -1090,7 +1186,7 @@
     ]
   },
   {
-    "__docId__": 70,
+    "__docId__": 71,
     "kind": "member",
     "name": "scripts",
     "memberof": "src/scripteasy.js~Scripteasy",
@@ -1109,7 +1205,7 @@
     }
   },
   {
-    "__docId__": 71,
+    "__docId__": 72,
     "kind": "method",
     "name": "parseScripts",
     "memberof": "src/scripteasy.js~Scripteasy",
@@ -1148,7 +1244,7 @@
     }
   },
   {
-    "__docId__": 72,
+    "__docId__": 73,
     "kind": "method",
     "name": "fromFile",
     "memberof": "src/scripteasy.js~Scripteasy",
@@ -1187,7 +1283,7 @@
     }
   },
   {
-    "__docId__": 73,
+    "__docId__": 74,
     "kind": "method",
     "name": "run",
     "memberof": "src/scripteasy.js~Scripteasy",
@@ -1197,7 +1293,7 @@
     "longname": "src/scripteasy.js~Scripteasy#run",
     "access": "public",
     "description": "Runs a script by name.",
-    "lineNumber": 68,
+    "lineNumber": 69,
     "params": [
       {
         "nullable": null,
@@ -1208,6 +1304,16 @@
         "optional": false,
         "name": "name",
         "description": "The name of the script to run."
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Array<string>"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "args",
+        "description": "The args to pass into the script."
       }
     ],
     "return": {

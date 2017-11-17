@@ -47,23 +47,28 @@ module.exports = class Script
 
   /**
    * Runs the script.
+   * @param {Array<string>} [args] - The args to pass into the command.
    * @return {Error?} - If an error occurs, the error is returned.
    */
-  run ()
+  run (args)
   {
-    return this._execTry();
+    return this._execTry(args);
   }
 
   /**
    * Executes a single command.
    * @param {string} command The command to execute.
+   * @param {Array<string>} [args] - The args to pass into the command.
    */
-  _exec (command)
+  _exec (command, args)
   {
     if (command in this.st.scripts) {
       const result = this.st.run(command);
       if (result) throw result;
       return;
+    }
+    if (args) {
+      command = Script._interpolateArgs(command, args);
     }
     command = Script._interpolateEnv(command, this.env);
     const stdout = execSync(command, {
@@ -76,33 +81,34 @@ module.exports = class Script
   /**
    * Executes the script's try block. On error the catch block is invoked.
    * After everything (error or no) the finally block is invoked.
+   * @param {Array<string>} [args] - The args to pass into the command.
    * @return {Error?} - If an error occurs, the error is returned.
    */
-  _execTry ()
+  _execTry (args)
   {
     let result = null;
     for (let command of this.try) {
       try {
-        this._exec(command);
+        this._exec(command, args);
       }
       catch (err) {
-        this._execCatch();
+        this._execCatch(args);
         result = err;
         break;
       }
     }
-    this._execFinally();
+    this._execFinally(args);
     return result;
   }
 
   /**
    * Executes the catch block.
    */
-  _execCatch ()
+  _execCatch (args)
   {
     for (let command of this.catch) {
       try {
-        this._exec(command);
+        this._exec(command, args);
       }
       catch (err) {
         return;
@@ -113,10 +119,10 @@ module.exports = class Script
   /**
    * Executes the finally block.
    */
-  _execFinally ()
+  _execFinally (args)
   {
     for (let command of this.finally) {
-      this._exec(command);
+      this._exec(command, args);
     }
   }
 
@@ -130,5 +136,21 @@ module.exports = class Script
   static _interpolateEnv (command, env)
   {
     return command.replace(/\$([a-zA-Z][a-zA-Z0-9_]+)/g, (_, p1) => env[p1]);
+  }
+
+  /**
+   * Replaces args placeholders with the arg values.
+   * @param {string} command - The command to have the args replaced in.
+   * @param {Array<string>} args - An array of args.
+   * @returns {string} - The command after args have been interpolated.
+   */
+  static _interpolateArgs (command, args)
+  {
+    return command
+      .replace(/\$@/g, args.join(' '))
+      .replace(/\$\d+/g, (match) => {
+        const idx = Number(match.replace(/\$/, ''));
+        return args[idx] || '';
+      });
   }
 }
