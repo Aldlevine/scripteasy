@@ -86,9 +86,11 @@ exports.precommit = {
     'git stash pop --index -q',
     'echo "All done!"',
   ],
-  test: 'nyc mocha',
-  docs: 'esdoc',
-}
+};
+
+exports.test = 'nyc mocha';
+
+exports.docs = 'esdoc';
 ```
 
 and add **that** to your `package.json`.
