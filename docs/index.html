@@ -93,9 +93,11 @@ exports.precommit = {
     &apos;git stash pop --index -q&apos;,
     &apos;echo &quot;All done!&quot;&apos;,
   ],
-  test: &apos;nyc mocha&apos;,
-  docs: &apos;esdoc&apos;,
-}</code>
+};
+
+exports.test = &apos;nyc mocha&apos;;
+
+exports.docs = &apos;esdoc&apos;;</code>
 </code></pre>
 <p>and add <strong>that</strong> to your <code>package.json</code>.</p>
 <pre><code class="lang-json"><code class="source-code prettyprint">{
