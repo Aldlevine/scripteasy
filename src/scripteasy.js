@@ -63,10 +63,11 @@ module.exports = class Scripteasy
   /**
    * Runs a script by name.
    * @param {string} name - The name of the script to run.
+   * @param {Array<string>} [args] - The args to pass into the script.
    * @return {Error?} - If an error occurs, the error is returned.
    */
-  run (name)
+  run (name, args)
   {
-    return this.scripts[name].run();
+    return this.scripts[name].run(args);
   }
 }

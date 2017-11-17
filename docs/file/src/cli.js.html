@@ -39,14 +39,14 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">#!/usr/bin/env node
 
 const path = require(&apos;path&apos;);
-const minimist = require(&apos;minimist&apos;);
+// const minimist = require(&apos;minimist&apos;);
 const ST = require(&apos;./scripteasy&apos;);
 
-/** @type {object} */
-const argv = minimist(process.argv.slice(2));
-
 /** @type {Array&lt;string&gt;} */
-const commands = argv._;
+const argv = process.argv.slice(2);
+
+/** @type {Array&lt;Array&lt;string&gt;&gt;} */
+const commands = argv.join(&apos; &apos;).split(&apos; -- &apos;).map(s =&gt; s.trim().split(&apos; &apos;));
 
 /** @type {object | string} */
 const {scripteasy} = require(path.join(process.cwd(), &apos;package.json&apos;));
@@ -61,7 +61,8 @@ else {
 }
 
 for (let command of commands) {
-  const err = st.run(command);
+  const args = command.slice(1);
+  const err = st.run(command[0], args);
   if (err) {
     console.error(`Error executing script &apos;${command}&apos; - &quot;${err.message}&quot;`);
     process.exit(err.status);

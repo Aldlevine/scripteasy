@@ -145,7 +145,7 @@ ez build
 ```
 
 ```
-ez test docs
+ez test -- docs
 ```
 
 #### Take a look at a hook
@@ -180,6 +180,31 @@ $ ez sayyes
 > If you say so
 $ YES=no ez sayyes
 > no
+```
+
+Also, pass in your CLI args however you want using a common bashism.
+
+```json
+{
+  "scripteasy": {
+    "first": "echo $0",
+    "second": "echo $1",
+    "all": "echo \"$@\""
+  }
+}
+```
+
+```
+$ ez first hello world
+> hello
+$ ez second hello world
+> world
+$ ez all hello world
+> hello world
+$ ez first hello world -- second hello world -- all hello world
+> hello
+> world
+> hello world
 ```
 
 ## Who?
