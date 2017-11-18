@@ -1,3 +1,22 @@
+<a name="0.1.0-0"></a>
+# [0.1.0-0](https://github.com/Aldlevine/scripteasy/compare/v0.0.5...v0.1.0-0) (2017-11-18)
+
+
+### Features
+
+* Add ability to pass args into scripts ([d87dd19](https://github.com/Aldlevine/scripteasy/commit/d87dd19))
+* **cli:** Add option parsing and `--help` option ([2029ae0](https://github.com/Aldlevine/scripteasy/commit/2029ae0))
+* **scripteasy:** Add ability to execute shell commands directly ([45e0ba9](https://github.com/Aldlevine/scripteasy/commit/45e0ba9))
+
+
+### BREAKING CHANGES
+
+* When running multiple scripts in one CLI command, each script must now be separated
+by `--`. As an example `ez cmd1 cmd2 ...` should become `ez cmd1 -- cmd2 -- ...`. This is to enable
+args to be specified per each script.
+
+
+
 <a name="0.0.5"></a>
 ## [0.0.5](https://github.com/Aldlevine/scripteasy/compare/v0.0.4...v0.0.5) (2017-11-17)
 
