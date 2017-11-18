@@ -354,6 +354,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/script.js~script.exec",
+    "class/src/script.js~Script.html#static-method-exec",
+    "src/script.js~Script.exec",
+    "method"
+  ],
+  [
     "src/scripteasy.js",
     "file/src/scripteasy.js.html",
     "src/scripteasy.js",

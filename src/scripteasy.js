@@ -68,6 +68,10 @@ module.exports = class Scripteasy
    */
   run (name, args)
   {
-    return this.scripts[name].run(args);
+    if (name in this.scripts) {
+      return this.scripts[name].run(args);
+    }
+    const Script = require('./script');
+    return Script.exec(`${name} $@`, args);
   }
 }
