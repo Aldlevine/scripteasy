@@ -1,7 +1,7 @@
 {
   "coverage": "100%",
-  "expectCount": 28,
-  "actualCount": 28,
+  "expectCount": 30,
+  "actualCount": 30,
   "files": {
     "src/cli.js": {
       "expectCount": 7,
@@ -9,8 +9,8 @@
       "undocumentLines": []
     },
     "src/script.js": {
-      "expectCount": 15,
-      "actualCount": 15,
+      "expectCount": 17,
+      "actualCount": 17,
       "undocumentLines": []
     },
     "src/scripteasy.js": {

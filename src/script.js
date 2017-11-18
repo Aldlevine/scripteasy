@@ -42,7 +42,8 @@ module.exports = class Script
     /** @type {object} */
     this.env = {...opts.env, ...process.env};
 
-    this.env.PATH = path.resolve(this.cwd, 'node_modules', '.bin') + path.delimiter + this.env.PATH;
+    // this.env.PATH = path.resolve(this.cwd, 'node_modules', '.bin') + path.delimiter + this.env.PATH;
+    this.env.PATH = Script._binPath(this.cwd, this.env.PATH);
   }
 
   /**
@@ -59,23 +60,14 @@ module.exports = class Script
    * Executes a single command.
    * @param {string} command The command to execute.
    * @param {Array<string>} [args] - The args to pass into the command.
+   * @return {Error?} - If an error occurs, the error is returned.
    */
   _exec (command, args)
   {
     if (command in this.st.scripts) {
-      const result = this.st.run(command);
-      if (result) throw result;
-      return;
+      return this.st.run(command);
     }
-    if (args) {
-      command = Script._interpolateArgs(command, args);
-    }
-    command = Script._interpolateEnv(command, this.env);
-    const stdout = execSync(command, {
-      cwd: this.cwd,
-      env: this.env,
-      stdio: [0,1,2],
-    });
+    return Script.exec(command, args, this.cwd, this.env);
   }
 
   /**
@@ -88,12 +80,8 @@ module.exports = class Script
   {
     let result = null;
     for (let command of this.try) {
-      try {
-        this._exec(command, args);
-      }
-      catch (err) {
+      if (result = this._exec(command, args)) {
         this._execCatch(args);
-        result = err;
         break;
       }
     }
@@ -107,12 +95,7 @@ module.exports = class Script
   _execCatch (args)
   {
     for (let command of this.catch) {
-      try {
-        this._exec(command, args);
-      }
-      catch (err) {
-        return;
-      }
+      if (this._exec(command, args)) return;
     }
   }
 
@@ -122,7 +105,37 @@ module.exports = class Script
   _execFinally (args)
   {
     for (let command of this.finally) {
-      this._exec(command, args);
+      if (this._exec(command, args)) return;
+    }
+  }
+
+  /**
+   * Executes a single command with the given args, cwd, and env
+   * @param {string} command The command to execute.
+   * @param {Array<string>} [args] - The args to pass into the command.
+   * @param {string} [cwd = process.cwd()] - The current working directory.
+   * @param {object} [env = process.env] - The environment variables to execute
+   * the command with.
+   * @return {Error?} - If an error occurs, the error is returned.
+   */
+  static exec (command, args, cwd = process.cwd(), env = process.env)
+  {
+    env = {...env};
+    env.PATH = Script._binPath(cwd, env.PATH);
+
+    if (args) {
+      command = Script._interpolateArgs(command, args);
+    }
+
+    try {
+      execSync(command, {
+        cwd,
+        env,
+        stdio: [0,1,2],
+      });
+    }
+    catch (err) {
+      return err;
     }
   }
 
@@ -152,5 +165,16 @@ module.exports = class Script
         const idx = Number(match.replace(/\$/, ''));
         return args[idx] || '';
       });
+  }
+
+  /**
+   * Adds the local node_modules/.bin to the current PATH env var.
+   * @param {string} cwd - The current working directory where node_modules exists.
+   * @param {string} PATH - The current PATH env var.
+   * @returns {string} - The updated PATH env var.
+   */
+  static _binPath (cwd, PATH)
+  {
+    return path.resolve(cwd, 'node_modules', '.bin') + path.delimiter + PATH;
   }
 }
