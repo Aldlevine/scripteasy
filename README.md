@@ -158,6 +158,24 @@ ez test -- docs
 }
 ```
 
+### Like npx?
+
+Use scripteasy to run local CLI commands
+
+```
+ez nyc mocha
+```
+
+```
+ez comp update -- browserify index.js
+```
+
+or any other command (but why?)
+
+```
+ez echo "why would anyone do this?"
+```
+
 ### Psst!
 
 ###### *Wanna know a secret?*
