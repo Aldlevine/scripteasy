@@ -29,7 +29,9 @@
 <nav class="navigation" data-ice="nav"><div>
   <ul>
     
-  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/script.js~Script.html">Script</a></span></span></li>
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/control.js~Command.html">Command</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/control.js~Control.html">Control</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/script.js~Script.html">Script</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/scripteasy.js~Scripteasy.html">Scripteasy</a></span></span></li>
 </ul>
 </div>
@@ -38,6 +40,7 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/script.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">const path = require(&apos;path&apos;);
 const {execSync} = require(&apos;child_process&apos;);
+const {Control, Command} = require(&apos;./control&apos;);
 
 /**
  * A class that represents the commands, control flow, and context of a singe
@@ -65,23 +68,32 @@ module.exports = class Script
     /** @type {Scripteasy} */
     this.st = st;
 
-    /** @type {Array&lt;string&gt;} */
-    this.try = [].concat(opts.try||[]);
+    const {cwd = process.cwd(), env = process.env, ...controls} = opts;
 
-    /** @type {Array&lt;string&gt;} */
-    this.catch = [].concat(opts.catch||[]);
+    env.PATH = Script._binPath(cwd, env.PATH);
 
-    /** @type {Array&lt;string&gt;} */
-    this.finally = [].concat(opts.finally||[]);
+    this.cwd = cwd;
 
-    /** @type {string} */
-    this.cwd = opts.cwd || process.cwd();
+    this.env = env;
 
-    /** @type {object} */
-    this.env = {...opts.env, ...process.env};
+    this.controls = Control.fromObject(controls);
+
+    // /** @type {Array&lt;string&gt;} */
+    // this.try = [].concat(opts.try||[]);
+
+    // /** @type {Array&lt;string&gt;} */
+    // this.catch = [].concat(opts.catch||[]);
+
+    // /** @type {Array&lt;string&gt;} */
+    // this.finally = [].concat(opts.finally||[]);
+
+    // /** @type {string} */
+    // this.cwd = opts.cwd || process.cwd();
+
+    // /** @type {object} */
+    // this.env = {...opts.env, ...process.env};
 
     // this.env.PATH = path.resolve(this.cwd, &apos;node_modules&apos;, &apos;.bin&apos;) + path.delimiter + this.env.PATH;
-    this.env.PATH = Script._binPath(this.cwd, this.env.PATH);
   }
 
   /**
@@ -91,7 +103,67 @@ module.exports = class Script
    */
   run (args)
   {
-    return this._execTry(args);
+    // return this._execTry(args);
+    return this._execControls(this.controls);
+  }
+
+  _execControls (controls, args)
+  {
+    let err = false;
+    let ctx = null;
+    for (let control of controls) {
+      if (control instanceof Command) {
+        ctx = null;
+        if (err = this._exec(control, args)) break;
+        continue;
+      }
+      if (ctx == null &amp;&amp; control.type === &apos;try&apos;) {
+        ctx = &apos;try&apos;;
+        err = this._execControls(control.commands, args);
+        continue;
+      }
+      if (err &amp;&amp; ctx === &apos;try&apos; &amp;&amp; control.type === &apos;catch&apos;) {
+        ctx = &apos;catch&apos;;
+        if (err = this._execControls(control.commands, args)) break;
+        continue;
+      }
+      if ((ctx === &apos;try&apos; || ctx === &apos;catch&apos;) &amp;&amp; control.type === &apos;finally&apos;) {
+        ctx = null;
+        if (err = this._execControls(control.commands, args)) break;
+        continue;
+      }
+
+      if (ctx == null &amp;&amp; control.type === &apos;if&apos;) {
+        ctx = &apos;if&apos;;
+        err = this._execControls(control.commands, args);
+        continue;
+      }
+      if (err &amp;&amp; (ctx == &apos;if&apos; || ctx == &apos;elseif&apos;) &amp;&amp; control.type === &apos;elseif&apos;) {
+        ctx = control.type;
+        err = this._execControls(control.commands, args);
+        continue;
+      }
+      if (!err &amp;&amp; (ctx === &apos;if&apos; || ctx === &apos;elseif&apos;) &amp;&amp; control.type === &apos;then&apos;) {
+        ctx = &apos;then&apos;;
+        if (err = this._execControls(control.commands, args)) break;
+        continue;
+      }
+      if (err &amp;&amp; (ctx === &apos;if&apos; || ctx === &apos;elseif&apos;) &amp;&amp; control.type === &apos;else&apos;) {
+        ctx = null;
+        if (err = this._execControls(control.commands, args)) break;
+        continue;
+      }
+    }
+    return err;
+  }
+
+  _execCommands (commands, args)
+  {
+    let err = false;
+    for (let command of commands) {
+      if (err = this._exec(command, args)) break;
+    }
+    return err;
   }
 
   /**
@@ -102,6 +174,8 @@ module.exports = class Script
    */
   _exec (command, args)
   {
+    command = command.toString();
+
     if (command in this.st.scripts) {
       return this.st.run(command);
     }

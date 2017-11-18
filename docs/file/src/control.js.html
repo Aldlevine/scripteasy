@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <base data-ice="baseUrl" href="../../">
-  <title data-ice="title">src/cli.js | scripteasy</title>
+  <title data-ice="title">src/control.js | scripteasy</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
@@ -37,81 +37,38 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><h1 data-ice="title">src/cli.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">#!/usr/bin/env node
-
-const path = require(&apos;path&apos;);
-const ST = require(&apos;./scripteasy&apos;);
-
-/** @type {Array&lt;string&gt;} */
-const argv = process.argv.slice(2);
-
-/** @type {number} */
-const commandIdx = argv.findIndex((arg) =&gt; arg.charAt(0) !== &apos;-&apos;);
-
-/** @type {Array&lt;string&gt;} */
-const easyArgv = commandIdx &gt;= 0 ? argv.slice(0, commandIdx) : argv.slice();
-
-/** @type {Array&lt;string&gt;} */
-const commandsArgv = argv.slice(commandIdx);
-
-/** @type {Array&lt;Array&lt;string&gt;&gt;} */
-const commands = commandsArgv.join(&apos; &apos;)
-  .split(&apos; -- &apos;)
-  .filter(s =&gt; s.length)
-  .map(s =&gt; s.trim().split(&apos; &apos;));
-
-/** @type {object | string} */
-const {scripteasy} = require(path.join(process.cwd(), &apos;package.json&apos;));
-
-let st;
-
-/**
- * Show the help message and exit
- */
-function help ()
+<div class="content" data-ice="content"><h1 data-ice="title">src/control.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">exports.Control = class Control
 {
-  console.log(
-//------------------------------------------------------------------------------
-`scripteasy ${require(&apos;../package.json&apos;).version}
+  constructor (type, commands)
+  {
+    this.type = type;
+    if (typeof commands === &apos;string&apos;) {
+      if (type == &apos;command&apos;) this.commands = commands;
+      else this.commands = Control.fromObject(commands);
+    }
+    else {
+      this.commands = Control.fromObject(commands);
+    }
+  }
 
-Usage:
---------
-ez [opts] [[&lt;script&gt;] [args] [--]...]
-
-
-Options:
---------
---help -h                 Show this message`
-//------------------------------------------------------------------------------
-  );
-  process.exit(0);
+  static fromObject (obj)
+  {
+    if (obj instanceof Array) {
+      return obj.map(Control.fromObject).reduce((a, b) =&gt; a.concat(b), []);
+    }
+    if (typeof obj === &apos;string&apos;) {
+      return [new exports.Command(obj)];
+    }
+    return Object.entries(obj).map((args) =&gt; new Control(...args));
+  }
 }
 
-if (easyArgv.length) {
-  const minimist = require(&apos;minimist&apos;);
-  const argv = minimist(easyArgv);
-  if (argv.help || argv.h) help();
-}
-
-if (commands.length == 0) {
-  help();
-}
-
-if (typeof scripteasy === &apos;string&apos;) {
-  st = ST.fromFile(scripteasy);
-}
-else {
-  st = new ST(scripteasy);
-}
-
-for (let command of commands) {
-  const args = command.slice(1);
-  const err = st.run(command[0], args);
-  if (err) {
-    console.error(`Error executing script &apos;${command}&apos; - &quot;${err.message}&quot;`);
-    process.exit(err.status);
-    break;
+exports.Command = class Command extends String
+{
+  constructor (command)
+  {
+    super(command);
   }
 }
 </code></pre>

@@ -1,17 +1,36 @@
 {
-  "coverage": "100%",
-  "expectCount": 30,
-  "actualCount": 30,
+  "coverage": "67.56%",
+  "expectCount": 37,
+  "actualCount": 25,
   "files": {
     "src/cli.js": {
       "expectCount": 7,
       "actualCount": 7,
       "undocumentLines": []
     },
+    "src/control.js": {
+      "expectCount": 7,
+      "actualCount": 0,
+      "undocumentLines": [
+        1,
+        3,
+        5,
+        7,
+        15,
+        27,
+        29
+      ]
+    },
     "src/script.js": {
       "expectCount": 17,
-      "actualCount": 17,
-      "undocumentLines": []
+      "actualCount": 12,
+      "undocumentLines": [
+        35,
+        37,
+        39,
+        70,
+        120
+      ]
     },
     "src/scripteasy.js": {
       "expectCount": 6,

@@ -1,5 +1,17 @@
 window.esdocSearchIndex = [
   [
+    "scripteasy/src/control.js~command",
+    "class/src/control.js~Command.html",
+    "<span>Command</span> <span class=\"search-result-import-path\">scripteasy/src/control.js</span>",
+    "class"
+  ],
+  [
+    "scripteasy/src/control.js~control",
+    "class/src/control.js~Control.html",
+    "<span>Control</span> <span class=\"search-result-import-path\">scripteasy/src/control.js</span>",
+    "class"
+  ],
+  [
     "scripteasy/src/script.js~script",
     "class/src/script.js~Script.html",
     "<span>Script</span> <span class=\"search-result-import-path\">scripteasy/src/script.js</span>",
@@ -300,22 +312,58 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/control.js",
+    "file/src/control.js.html",
+    "src/control.js",
+    "file"
+  ],
+  [
+    "src/control.js~command#constructor",
+    "class/src/control.js~Command.html#instance-constructor-constructor",
+    "src/control.js~Command#constructor",
+    "method"
+  ],
+  [
+    "src/control.js~control#commands",
+    "class/src/control.js~Control.html#instance-member-commands",
+    "src/control.js~Control#commands",
+    "member"
+  ],
+  [
+    "src/control.js~control#constructor",
+    "class/src/control.js~Control.html#instance-constructor-constructor",
+    "src/control.js~Control#constructor",
+    "method"
+  ],
+  [
+    "src/control.js~control#type",
+    "class/src/control.js~Control.html#instance-member-type",
+    "src/control.js~Control#type",
+    "member"
+  ],
+  [
+    "src/control.js~control.fromobject",
+    "class/src/control.js~Control.html#static-method-fromObject",
+    "src/control.js~Control.fromObject",
+    "method"
+  ],
+  [
     "src/script.js",
     "file/src/script.js.html",
     "src/script.js",
     "file"
   ],
   [
-    "src/script.js~script#catch",
-    "class/src/script.js~Script.html#instance-member-catch",
-    "src/script.js~Script#catch",
-    "member"
-  ],
-  [
     "src/script.js~script#constructor",
     "class/src/script.js~Script.html#instance-constructor-constructor",
     "src/script.js~Script#constructor",
     "method"
+  ],
+  [
+    "src/script.js~script#controls",
+    "class/src/script.js~Script.html#instance-member-controls",
+    "src/script.js~Script#controls",
+    "member"
   ],
   [
     "src/script.js~script#cwd",
@@ -330,12 +378,6 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/script.js~script#finally",
-    "class/src/script.js~Script.html#instance-member-finally",
-    "src/script.js~Script#finally",
-    "member"
-  ],
-  [
     "src/script.js~script#run",
     "class/src/script.js~Script.html#instance-method-run",
     "src/script.js~Script#run",
@@ -345,12 +387,6 @@ window.esdocSearchIndex = [
     "src/script.js~script#st",
     "class/src/script.js~Script.html#instance-member-st",
     "src/script.js~Script#st",
-    "member"
-  ],
-  [
-    "src/script.js~script#try",
-    "class/src/script.js~Script.html#instance-member-try",
-    "src/script.js~Script#try",
     "member"
   ],
   [

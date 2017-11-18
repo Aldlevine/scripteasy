@@ -28,3 +28,17 @@ version:
   - conventional-changelog -p angular -i CHANGELOG.md -s -r 0
   - git add CHANGELOG.md
   - build
+
+pz:
+  env:
+    NUM: 3
+  try:
+    - if: ("$NUM" == "1")
+      then: echo ONE
+    - elif: ("$NUM" == "2")
+      then: echo TWO
+    - else:
+      - if: ("$0" == "1")
+        then: echo ARG ONE
+        else: fail
+  catch: echo FAILED

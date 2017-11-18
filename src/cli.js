@@ -69,7 +69,7 @@ for (let command of commands) {
   const args = command.slice(1);
   const err = st.run(command[0], args);
   if (err) {
-    console.error(`Error executing script '${command}' - "${err.message}"`);
+    console.error(`Error executing script '${command.join(' ')}' - "${err.message}"`);
     process.exit(err.status);
     break;
   }

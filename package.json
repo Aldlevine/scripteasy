@@ -32,7 +32,7 @@
     "version": "node ./src/cli.js version"
   },
   "config": { "commitizen": { "path": "./node_modules/cz-conventional-changelog" } },
-  "dependencies": { "minimist": "^1.2.0", "yaml": "^0.3.0" },
+  "dependencies": { "js-yaml": "^3.10.0", "minimist": "^1.2.0" },
   "devDependencies": {
     "@commitlint/cli": "^4.3.0",
     "@commitlint/config-angular": "^4.3.0",

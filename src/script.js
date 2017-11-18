@@ -1,5 +1,6 @@
 const path = require('path');
 const {execSync} = require('child_process');
+const {Control, Command} = require('./control');
 
 /**
  * A class that represents the commands, control flow, and context of a singe
@@ -27,23 +28,15 @@ module.exports = class Script
     /** @type {Scripteasy} */
     this.st = st;
 
-    /** @type {Array<string>} */
-    this.try = [].concat(opts.try||[]);
+    const {cwd = process.cwd(), env = process.env, ...controls} = opts;
 
-    /** @type {Array<string>} */
-    this.catch = [].concat(opts.catch||[]);
+    env.PATH = Script._binPath(cwd, env.PATH);
 
-    /** @type {Array<string>} */
-    this.finally = [].concat(opts.finally||[]);
+    this.cwd = cwd;
 
-    /** @type {string} */
-    this.cwd = opts.cwd || process.cwd();
+    this.env = env;
 
-    /** @type {object} */
-    this.env = {...opts.env, ...process.env};
-
-    // this.env.PATH = path.resolve(this.cwd, 'node_modules', '.bin') + path.delimiter + this.env.PATH;
-    this.env.PATH = Script._binPath(this.cwd, this.env.PATH);
+    this.controls = Control.fromObject(controls);
   }
 
   /**
@@ -53,7 +46,74 @@ module.exports = class Script
    */
   run (args)
   {
-    return this._execTry(args);
+    const err = this._execControls(this.controls, args);
+    if (err instanceof Error) return err;
+  }
+
+  _execControls (controls, args)
+  {
+    let err = false;
+    let ctx = null;
+    for (let control of controls) {
+      if (control instanceof Command) {
+        ctx = null;
+        if (err = this._exec(control, args)) break;
+        continue;
+      }
+
+      if (ctx == null && control.type === 'try') {
+        ctx = 'try';
+        err = this._execControls(control.commands, args);
+        continue;
+      }
+
+      if (err && ctx === 'try' && control.type === 'catch') {
+        ctx = 'catch';
+        if (err = this._execControls(control.commands, args)) break;
+        continue;
+      }
+
+      if ((ctx === 'try' || ctx === 'catch') && control.type === 'finally') {
+        ctx = null;
+        if (err = this._execControls(control.commands, args)) break;
+        continue;
+      }
+
+      if (ctx == null && control.type === 'if') {
+        ctx = 'if';
+        err = this._execControls(control.commands, args);
+        continue;
+      }
+
+      if (err && (ctx == 'if' || ctx == 'elif') && control.type === 'elif') {
+        ctx = 'elif'
+        err = this._execControls(control.commands, args);
+        continue;
+      }
+
+      if (!err && (ctx === 'if' || ctx === 'elif') && control.type === 'then') {
+        ctx = 'then';
+        if (err = this._execControls(control.commands, args)) break;
+        continue;
+      }
+
+      if (err && (ctx === 'if' || ctx === 'elif') && control.type === 'else') {
+        ctx = null;
+        if (err = this._execControls(control.commands, args)) break;
+        continue;
+      }
+    }
+
+    return err;
+  }
+
+  _execCommands (commands, args)
+  {
+    let err = false;
+    for (let command of commands) {
+      if (err = this._exec(command, args)) break;
+    }
+    return err;
   }
 
   /**
@@ -64,49 +124,26 @@ module.exports = class Script
    */
   _exec (command, args)
   {
+    command = command.toString();
+
+    if (args) {
+      command = Script._interpolateArgs(command, args);
+    }
+
+    command = Script._interpolateEnv(command, this.env);
+
+    if (/^\(.+\)$/.test(command)) {
+      const result = this._execEval(command);
+      if (result instanceof Error) return result;
+      else return !result;
+    }
+
+
     if (command in this.st.scripts) {
       return this.st.run(command);
     }
+
     return Script.exec(command, args, this.cwd, this.env);
-  }
-
-  /**
-   * Executes the script's try block. On error the catch block is invoked.
-   * After everything (error or no) the finally block is invoked.
-   * @param {Array<string>} [args] - The args to pass into the command.
-   * @return {Error?} - If an error occurs, the error is returned.
-   */
-  _execTry (args)
-  {
-    let result = null;
-    for (let command of this.try) {
-      if (result = this._exec(command, args)) {
-        this._execCatch(args);
-        break;
-      }
-    }
-    this._execFinally(args);
-    return result;
-  }
-
-  /**
-   * Executes the catch block.
-   */
-  _execCatch (args)
-  {
-    for (let command of this.catch) {
-      if (this._exec(command, args)) return;
-    }
-  }
-
-  /**
-   * Executes the finally block.
-   */
-  _execFinally (args)
-  {
-    for (let command of this.finally) {
-      if (this._exec(command, args)) return;
-    }
   }
 
   /**
@@ -120,13 +157,6 @@ module.exports = class Script
    */
   static exec (command, args, cwd = process.cwd(), env = process.env)
   {
-    env = {...env};
-    env.PATH = Script._binPath(cwd, env.PATH);
-
-    if (args) {
-      command = Script._interpolateArgs(command, args);
-    }
-
     try {
       execSync(command, {
         cwd,
@@ -139,6 +169,23 @@ module.exports = class Script
     }
   }
 
+  _execEval (command)
+  {
+    const vm = require('vm');
+
+    command = Script._interpolateSubshell(command);
+
+    const context = vm.createContext({
+      $: (cmd) => {
+        return execSync(cmd, {
+          cwd: this.cwd,
+          env: this.env,
+        }).toString();
+      }
+    });
+    return vm.runInContext(command, context);
+  }
+
   /**
    * Replaces the environment variable invocations in a script, such as
    * `$MYVAR` with the value in the script's environment.
@@ -148,7 +195,7 @@ module.exports = class Script
    */
   static _interpolateEnv (command, env)
   {
-    return command.replace(/\$([a-zA-Z][a-zA-Z0-9_]+)/g, (_, p1) => env[p1]);
+    return command.replace(/\$([a-zA-Z][a-zA-Z0-9_]*)/g, (_, p1) => env[p1]);
   }
 
   /**
@@ -165,6 +212,11 @@ module.exports = class Script
         const idx = Number(match.replace(/\$/, ''));
         return args[idx] || '';
       });
+  }
+
+  static _interpolateSubshell (command)
+  {
+    return command.replace(/\$\(([^)]+)\)/g, (_, str) => `$(${JSON.stringify(str)})`);
   }
 
   /**

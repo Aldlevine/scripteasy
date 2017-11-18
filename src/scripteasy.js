@@ -50,9 +50,9 @@ module.exports = class Scripteasy
     let scripts = {};
 
     if (['.yml', '.yaml'].indexOf(path.extname(filename)) > -1) {
-      const yaml = require('yaml');
+      const yaml = require('js-yaml');
       const data = fs.readFileSync(filename).toString();
-      scripts = yaml.eval(data);
+      scripts = yaml.load(data);
     }
     else {
       scripts = require(path.resolve(process.cwd(), filename));
