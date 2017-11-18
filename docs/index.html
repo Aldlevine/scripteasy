@@ -133,7 +133,7 @@ docs: esdoc</code>
 }</code>
 </code></pre>
 <h3 id="like-actually-running-your-scripts-">Like actually running your scripts?</h3><h4 id="try-the-cli">Try the CLI</h4><pre><code><code class="source-code prettyprint">ez build</code>
-</code></pre><pre><code><code class="source-code prettyprint">ez test docs</code>
+</code></pre><pre><code><code class="source-code prettyprint">ez test -- docs</code>
 </code></pre><h4 id="take-a-look-at-a-hook">Take a look at a hook</h4><pre><code class="lang-json"><code class="source-code prettyprint">{
   &quot;scripts&quot;: {
     &quot;precommit&quot;: &quot;ez precommit&quot;
@@ -154,6 +154,25 @@ docs: esdoc</code>
 &gt; If you say so
 $ YES=no ez sayyes
 &gt; no</code>
+</code></pre><p>Also, pass in your CLI args however you want using a common bashism.</p>
+<pre><code class="lang-json"><code class="source-code prettyprint">{
+  &quot;scripteasy&quot;: {
+    &quot;first&quot;: &quot;echo $0&quot;,
+    &quot;second&quot;: &quot;echo $1&quot;,
+    &quot;all&quot;: &quot;echo \&quot;$@\&quot;&quot;
+  }
+}</code>
+</code></pre>
+<pre><code><code class="source-code prettyprint">$ ez first hello world
+&gt; hello
+$ ez second hello world
+&gt; world
+$ ez all hello world
+&gt; hello world
+$ ez first hello world -- second hello world -- all hello world
+&gt; hello
+&gt; world
+&gt; hello world</code>
 </code></pre><h2 id="who-">Who?</h2><p>You?</p>
 <h2 id="when-">When?</h2><p>Why not now?</p>
 </div>
